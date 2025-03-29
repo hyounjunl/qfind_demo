@@ -1,30 +1,40 @@
-# backend/app/schemas/macro.py
 from typing import List, Optional
-from datetime import datetime
 from pydantic import BaseModel
+from datetime import date
 
-class MacroIndicatorBase(BaseModel):
-    name: str
+
+class EconomicIndicator(BaseModel):
     value: float
-    previous_value: float
     change: float
-    change_percent: float
+    previous: float
+    forecast: float
+    description: str
 
-class MacroIndicator(MacroIndicatorBase):
+
+class EconomicIndicators(BaseModel):
+    month: str
+    indicators: dict[str, EconomicIndicator]
+
+
+class MacroAnalysis(BaseModel):
+    date: date
+    positiveFactors: List[str]
+    riskFactors: List[str]
+    mixedSignals: List[str]
+
+
+class MacroNewsItem(BaseModel):
     id: int
-    timestamp: datetime
-    
-    class Config:
-        from_attributes = True
+    title: str
+    date: str  # e.g., "3hours ago"
+    tag: str
 
-class MacroAnalysisBase(BaseModel):
-    positive_factors: str
-    risk_factors: str
-    mixed_signals: str
-    date: str
 
-class MacroAnalysis(MacroAnalysisBase):
-    id: int
-    
-    class Config:
-        from_attributes = True
+class MacroNews(BaseModel):
+    date: date
+    news: List[MacroNewsItem]
+
+
+class MacroDates(BaseModel):
+    dates: List[str]
+    months: List[str]

@@ -8,8 +8,8 @@ import datetime
 def init_db():
     """Initialize the database with tables"""
     # Create schema if it doesn't exist
-    with engine.connect() as connection:
-        connection.execute(f"CREATE SCHEMA IF NOT EXISTS {settings.DB_SCHEMA}")
+    # with engine.connect() as connection:
+    #     connection.execute(f"CREATE SCHEMA IF NOT EXISTS {settings.DB_SCHEMA}")
     
     # Create tables
     models.Base.metadata.create_all(bind=engine)

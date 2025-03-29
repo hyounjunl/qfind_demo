@@ -11,6 +11,7 @@ class Settings:
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL")
     DB_SCHEMA: str = "qfind"  # Add the schema name
+    DB_AGII: str = "agii"
     
     # JWT
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your_secret_key_here")
