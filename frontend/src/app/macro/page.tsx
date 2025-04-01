@@ -465,6 +465,8 @@ const MacroPage = () => {
         value: number;
         change: number;
         description: string;
+        previous: number; 
+        forecast: number;
     }> | null>(null);
 
     const [dailyAnalysis, setDailyAnalysis] = useState({
@@ -751,11 +753,11 @@ const MacroPage = () => {
                                         <div className="grid grid-cols-2 gap-4 mb-6">
                                             <div className="bg-slate-50 p-4 rounded-lg shadow-sm border border-slate-100">
                                                 <div className="text-sm text-gray-500 mb-1 uppercase tracking-wider">Previous</div>
-                                                <div className="font-medium text-lg">N/A</div>
+                                                <div className="font-medium text-lg">{formatValue(activeIndicator, indicator.previous)}</div>
                                             </div>
                                             <div className="bg-slate-50 p-4 rounded-lg shadow-sm border border-slate-100">
                                                 <div className="text-sm text-gray-500 mb-1 uppercase tracking-wider">Forecast</div>
-                                                <div className="font-medium text-lg">N/A</div>
+                                                <div className="font-medium text-lg">{formatValue(activeIndicator, indicator.forecast)}</div>
                                             </div>
                                         </div>
                                     )}
