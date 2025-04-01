@@ -7,6 +7,8 @@ from sqlalchemy.sql.expression import extract
 from app.db.database import get_db
 from app.db.models import MacroAnalysisState, News
 from sqlalchemy import func
+from urllib.parse import quote
+
 
 # Temporary dummy data - replace with database queries later
 class MacroService:
@@ -264,7 +266,8 @@ class MacroService:
                 News.id,
                 News.date,
                 News.category,
-                News.headline
+                News.headline,
+                News.url
             ).filter(
                 func.date(News.date) == filter_date.date(),
             ).order_by(News.date.desc())
@@ -292,7 +295,8 @@ class MacroService:
                     "id": item.id,
                     "title": item.headline,
                     "date": date_formatted,
-                    "tag": item.category[0]
+                    "tag": item.category[0],
+                    "url": item.url if item.url and item.url != 'NaN' else f"https://www.google.com/search?q={quote(item.headline)}"
                 })
                     
         except Exception as e:

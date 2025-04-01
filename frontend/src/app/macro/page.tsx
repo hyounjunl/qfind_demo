@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
 
@@ -12,20 +13,14 @@ import {
 } from '@/services/macro';
 
 // Helper function to format dates instead of using date-fns
-const formatDate = (dateString) => {
+const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
-};
-
-const formatMonthYear = (dateString) => {
-    const date = new Date(dateString);
-    const options = { year: 'numeric', month: 'long' };
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 };
 
 // Dummy data for macro analysis
-const macroAnalysisData = {
+type MacroAnalysisData = {
     // 7 days of sample data
     dates: [
         {
@@ -466,19 +461,33 @@ const macroAnalysisData = {
 
 const MacroPage = () => {
     // State for data
-    const [indicators, setIndicators] = useState({});
+    const [indicators, setIndicators] = useState<Record<keyof MacroAnalysisData['dates'][0]['economicIndicators'], {
+        value: number;
+        change: number;
+        description: string;
+    }> | null>(null);
+
     const [dailyAnalysis, setDailyAnalysis] = useState({
         positiveFactors: [],
         riskFactors: [],
         mixedSignals: []
     });
-    const [news, setNews] = useState([]);
+    interface NewsItem {
+        id: number;
+        title: string;
+        date: string;
+        tag: string;
+        url?: string; // Optional if not all news items have a URL
+    }
+    
+    const [news, setNews] = useState<NewsItem[]>([]);
     const [availableDates, setAvailableDates] = useState<string[]>([]);
     const [selectedDate, setSelectedDate] = useState('');
     const [calendarOpen, setCalendarOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [activeIndicator, setActiveIndicator] = useState<keyof typeof macroAnalysisData.dates[0]['economicIndicators']>('ismPMI');
+    const [activeIndicator, setActiveIndicator] = useState<keyof MacroAnalysisData['dates'][0]['economicIndicators']>('ismPMI');
 
+    
     // Fetch available dates when component mounts
     useEffect(() => {
         const loadInitialData = async () => {
@@ -542,13 +551,13 @@ const MacroPage = () => {
     }, [selectedDate]);
 
 
-    const handleDateSelect = (date) => {
+    const handleDateSelect = (date: string) => {
         setSelectedDate(date);
         setCalendarOpen(false);
     };
 
     // Function to navigate to next/previous date
-    const navigateDate = (direction) => {
+    const navigateDate = (direction: string) => {
         const currentIndex = availableDates.indexOf(selectedDate);
 
         if (direction === 'next' && currentIndex > 0) {
@@ -557,9 +566,11 @@ const MacroPage = () => {
             setSelectedDate(availableDates[currentIndex + 1]);
         }
     };
-
+    if (loading) {
+        console.log('Loading...');
+    }
     // Enhanced month change handler
-    const handleMonthChange = async (monthYear) => {
+    const handleMonthChange = async (monthYear: string) => {
         try {
             setLoading(true);
             const indicatorsData = await fetchEconomicIndicators(monthYear);
@@ -672,7 +683,7 @@ const MacroPage = () => {
                     {/* Active indicator content */}
                     <div className="bg-white p-6 rounded-lg shadow-sm">
                         {(() => {
-                            const indicator = indicators[activeIndicator];
+                            const indicator = indicators ? indicators[activeIndicator] : null;
                             const indicatorNames = {
                                 ismPMI: "ISM Manufacturing PMI",
                                 adpNonfarm: "ADP Nonfarm Employment Change",
@@ -683,7 +694,7 @@ const MacroPage = () => {
                                 gdp: "GDP Growth Rate (QoQ)"
                             };
 
-                            const formatValue = (key, value) => {
+                            const formatValue = (key: keyof MacroAnalysisData['dates'][0]['economicIndicators'], value: number | null) => {
                                 if (!value && value !== 0) return 'N/A';
 
                                 if (key === 'unemploymentRate' || key === 'cpi' || key === 'coreCPI' || key === 'gdp') {
@@ -694,7 +705,7 @@ const MacroPage = () => {
                                 return value;
                             };
 
-                            const formatChange = (value) => {
+                            const formatChange = (value: number | null) => {
                                 if (!value && value !== 0) return <span className="text-gray-600">N/A</span>;
 
                                 if (value > 0) {
@@ -739,11 +750,11 @@ const MacroPage = () => {
                                         <div className="grid grid-cols-2 gap-4 mb-6">
                                             <div className="bg-slate-50 p-4 rounded-lg shadow-sm border border-slate-100">
                                                 <div className="text-sm text-gray-500 mb-1 uppercase tracking-wider">Previous</div>
-                                                <div className="font-medium text-lg">{formatValue(activeIndicator, indicator.previous)}</div>
+                                                <div className="font-medium text-lg">N/A</div>
                                             </div>
                                             <div className="bg-slate-50 p-4 rounded-lg shadow-sm border border-slate-100">
                                                 <div className="text-sm text-gray-500 mb-1 uppercase tracking-wider">Forecast</div>
-                                                <div className="font-medium text-lg">{formatValue(activeIndicator, indicator.forecast)}</div>
+                                                <div className="font-medium text-lg">N/A</div>
                                             </div>
                                         </div>
                                     )}
@@ -1007,23 +1018,26 @@ const MacroPage = () => {
                         {news.length > 0 ? (
                             news.slice(0, 5).map(item => {
                                 // Generate a random placeholder image based on categories or just random
-                                let placeholderImage;
                                 // Option 1: Random selection from all placeholders
                                 const placeholders = ['finance.jpg', 'markets.jpg', 'economy.jpg', 'stocks.jpg', 'currency.jpg'];
                                 const randomIndex = Math.floor(Math.random() * placeholders.length);
-                                placeholderImage = `/images/news-placeholders/${placeholders[randomIndex]}`;
+                                const placeholderImage = `/images/news-placeholders/${placeholders[randomIndex]}`;
 
                                 return (
                                     <div key={item.id} className="bg-white rounded-lg shadow-sm overflow-hidden flex hover:shadow-md transition-shadow duration-200 border border-gray-100">
                                         <div className="bg-gray-200 w-24 h-24 flex-shrink-0 overflow-hidden">
-                                            <img
+                                            <Image
                                                 src={placeholderImage}
                                                 alt={item.tag}
                                                 className="w-full h-full object-cover"
                                             />
                                         </div>
                                         <div className="p-4 flex-1">
-                                            <h3 className="font-medium text-gray-900 mb-1 hover:text-indigo-700 transition-colors">{item.title}</h3>
+                                            <a href={item.url} target="_blank" rel="noopener noreferrer">
+                                                <h3 className="font-medium text-gray-900 mb-1 hover:text-indigo-700 transition-colors">
+                                                    {item.title}
+                                                </h3>
+                                            </a>
                                             <div className="flex items-center text-sm text-gray-500">
                                                 <span className="flex items-center">
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

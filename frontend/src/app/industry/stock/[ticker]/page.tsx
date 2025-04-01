@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import Link from 'next/link';
+// import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '@/components/layout/Layout';
 
@@ -12,7 +12,7 @@ const StockDetailPage = () => {
   
   const [stockData, setStockData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'before' | 'after'>('before');
   const [selectedSection, setSelectedSection] = useState<keyof typeof mockStockData.qraftAnalysis>('business');
 
@@ -29,8 +29,12 @@ const StockDetailPage = () => {
             setLoading(false);
             return;
           }
-        } catch (e) {
-          console.log('API not available yet, using mock data');
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            console.log('API not available yet, using mock data:', e.message);
+          } else {
+            console.log('API not available yet, using mock data:', e);
+          }
         }
         
         // If we reach here, use mock data instead of showing an error
@@ -42,7 +46,7 @@ const StockDetailPage = () => {
           setLoading(false);
         }, 500);
       } catch (err) {
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
         setLoading(false);
       }
     };
@@ -67,7 +71,7 @@ const StockDetailPage = () => {
 
   // Fallback for development/testing when no API is available
   // Define a map of company names based on ticker
-  const companyNameMap = {
+  const companyNameMap: Record<string, string> = {
     'TSLA': 'Tesla, Inc.',
     'AAPL': 'Apple Inc.',
     'MSFT': 'Microsoft Corporation',

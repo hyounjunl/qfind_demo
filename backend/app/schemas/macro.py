@@ -28,6 +28,7 @@ class MacroNewsItem(BaseModel):
     title: str
     date: str  # e.g., "3hours ago"
     tag: str
+    url : str
 
 
 class MacroNews(BaseModel):

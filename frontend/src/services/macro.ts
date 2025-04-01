@@ -16,6 +16,8 @@ export const fetchEconomicIndicators = async (month?: string) => {
       throw error;
     }
   };
+
+  
   
 //   {
 //     "month": "March 2025",

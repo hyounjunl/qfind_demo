@@ -3,21 +3,21 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
-import {
-    fetchEconomicIndicators,
-    fetchFuturesData, // Will be implemented when API is available
-    fetchFuturesSentiment, // Will be implemented when API is available
-    fetchMarketNews
-} from '@/services/api';
+// import {
+//     fetchEconomicIndicators,
+//     fetchFuturesData, // Will be implemented when API is available
+//     fetchFuturesSentiment, // Will be implemented when API is available
+//     fetchMarketNews
+// } from '@/services/api';
 
 // Helper functions
-const formatDate = (dateString) => {
+const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 };
 
-const formatNumber = (num) => {
+const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
@@ -30,12 +30,66 @@ const FuturesPage = () => {
     const [selectedFuture, setSelectedFuture] = useState('ES');
     const [timeframe, setTimeframe] = useState('daily');
     const [loading, setLoading] = useState(true);
-    const [marketData, setMarketData] = useState(null);
-    const [news, setNews] = useState([]);
+    interface MarketData {
+        [key: string]: {
+            currentPrice: number;
+            dailyChange: number;
+            dailyChangePercent: number;
+            volume: number;
+            openInterest: number;
+            volatility: number;
+            support: number[];
+            resistance: number[];
+            sentiment: number;
+            aiAnalysis: {
+                summary: string;
+                keyLevels: string;
+                unusualActivity: string;
+                correlations: {
+                    strengthening: string[];
+                    weakening: string[];
+                    anomalies: string;
+                };
+                riskAssessment: {
+                    overnightGapRisk: string;
+                    volatilityOutlook: string;
+                    eventRisks: string[];
+                };
+            };
+            calendarSpreads: {
+                frontMonth: string;
+                backMonth: string;
+                spread: number;
+                zScore: number;
+            }[];
+            seasonalPatterns: {
+                currentPhase: string;
+                consistency: string;
+                averageReturn: string;
+            };
+            recentActivity: {
+                time: string;
+                price: number;
+                volume: number;
+                note: string;
+            }[];
+        };
+    }
+    
+    interface NewsItem {
+        id: number;
+        title: string;
+        date: string;
+        tag: string;
+        snippet: string;
+    }
+    
+    const [marketData, setMarketData] = useState<MarketData | null>(null);
+    const [news, setNews] = useState<NewsItem[]>([]);
     const [showAiInsights, setShowAiInsights] = useState(true);
 
     // Dummy data for futures contracts
-    const futuresContracts = [
+    const futuresContracts = useMemo(() => [
         { symbol: 'ES', name: 'E-mini S&P 500', exchange: 'CME' },
         { symbol: 'NQ', name: 'E-mini Nasdaq-100', exchange: 'CME' },
         { symbol: 'YM', name: 'E-mini Dow', exchange: 'CBOT' },
@@ -46,7 +100,7 @@ const FuturesPage = () => {
         { symbol: 'ZF', name: '5-Year U.S. Treasury Notes', exchange: 'CBOT' },
         { symbol: '6E', name: 'Euro FX', exchange: 'CME' },
         { symbol: '6J', name: 'Japanese Yen', exchange: 'CME' }
-    ];
+    ], []);
 
     // Dummy market data - would be replaced with API data
     const dummyMarketData = useMemo(() => ({
@@ -298,16 +352,16 @@ const FuturesPage = () => {
     ];
 
     // Dummy trading volume data for visualization
-    const volumeData = {
-        labels: ['9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00'],
-        datasets: [
-            {
-                ESdata: [4532, 3245, 2876, 2145, 3421, 1876, 2345, 1985, 2654, 3123, 3875, 4532, 5421, 6532],
-                NQdata: [2532, 2145, 1876, 1732, 2421, 1576, 1845, 1585, 1954, 2323, 2675, 3532, 4021, 4832],
-                CLdata: [1532, 1245, 1276, 1545, 1821, 1376, 1445, 1285, 1454, 1623, 1875, 2032, 2221, 2432],
-            }
-        ]
-    };
+    // const volumeData = {
+    //     labels: ['9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00'],
+    //     datasets: [
+    //         {
+    //             ESdata: [4532, 3245, 2876, 2145, 3421, 1876, 2345, 1985, 2654, 3123, 3875, 4532, 5421, 6532],
+    //             NQdata: [2532, 2145, 1876, 1732, 2421, 1576, 1845, 1585, 1954, 2323, 2675, 3532, 4021, 4832],
+    //             CLdata: [1532, 1245, 1276, 1545, 1821, 1376, 1445, 1285, 1454, 1623, 1875, 2032, 2221, 2432],
+    //         }
+    //     ]
+    // };
 
     // Effect to load initial data
     useEffect(() => {
@@ -331,7 +385,7 @@ const FuturesPage = () => {
         };
 
         loadData();
-    }, [selectedFuture]);
+    }, [selectedFuture, dummyMarketData, dummyNews]); // Added dummyMarketData and dummyNews to the dependency array
 
     // Get current future data
     const currentFutureData = useMemo(() => {
@@ -440,7 +494,7 @@ const FuturesPage = () => {
                             <div>
                                 <h2 className="text-2xl font-bold mb-1">{currentContractName} Futures ({selectedFuture})</h2>
                                 <div className="text-sm text-gray-600">
-                                    Last updated: {new Date().toLocaleTimeString()} ET | {formatDate(new Date())}
+                                    Last updated: {new Date().toLocaleTimeString()} ET | {formatDate(new Date().toISOString())}
                                 </div>
                             </div>
 
@@ -1419,7 +1473,7 @@ const FuturesPage = () => {
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             <tr>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">May 1-15</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">"Sell in May" Period</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">&quot;Sell in May&quot; Period</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                     {selectedFuture === 'ES' || selectedFuture === 'NQ' ? '-0.8% average' : '+1.2% average'}
                                                 </td>
