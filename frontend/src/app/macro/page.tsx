@@ -500,11 +500,12 @@ const MacroPage = () => {
 
                 // Set most recent date as default
                 const mostRecentDate = datesData.dates[0];
+                const mostRecentMonth = mostRecentDate.split('-').slice(0, 2).join(' ');
                 setSelectedDate(mostRecentDate);
 
                 // Fetch data for the most recent date
                 const [indicatorsData, analysisData, newsData] = await Promise.all([
-                    fetchEconomicIndicators(),
+                    fetchEconomicIndicators(mostRecentMonth),
                     fetchDailyAnalysis(mostRecentDate),
                     fetchMacroNews(mostRecentDate)
                 ]);
@@ -1029,6 +1030,8 @@ const MacroPage = () => {
                                             <Image
                                                 src={placeholderImage}
                                                 alt={item.tag}
+                                                width={96}
+                                                height={96} 
                                                 className="w-full h-full object-cover"
                                             />
                                         </div>

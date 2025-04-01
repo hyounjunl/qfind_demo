@@ -313,7 +313,7 @@ const FuturesPage = () => {
     }), []);
 
     // Dummy news related to futures - would be replaced with API data
-    const dummyNews = [
+    const dummyNews = useMemo(() => [
         {
             id: 1,
             title: "Equity Futures Rally Following Strong Tech Earnings",
@@ -349,7 +349,7 @@ const FuturesPage = () => {
             tag: "Agriculture Futures",
             snippet: "Corn and soybean futures showed mixed performance as updated weather forecasts presented a varied outlook for key growing regions."
         }
-    ];
+    ], []);
 
     // Dummy trading volume data for visualization
     // const volumeData = {
