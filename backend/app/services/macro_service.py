@@ -8,6 +8,7 @@ from app.db.database import get_db
 from app.db.models import MacroAnalysisState, News
 from sqlalchemy import func
 from urllib.parse import quote
+from calendar import monthrange
 
 
 # Temporary dummy data - replace with database queries later
@@ -18,18 +19,47 @@ class MacroService:
         self.available_dates = [(today - timedelta(days=i)).strftime("%Y-%m-%d") for i in range(90)]
         self.available_months = list(set([d[:7] for d in self.available_dates]))
     
-    def get_available_dates(self) -> Dict:
-        """Return available dates for macro analysis data"""
-        months = []
-        for month_year in self.available_months:
-            year, month = month_year.split("-")
-            month_name = datetime.strptime(month, "%m").strftime("%B")
-            months.append(f"{month_name} {year}")
-        
-        return {
-            "dates": self.available_dates,
-            "months": sorted(months, reverse=True)
-        }
+    def get_available_dates(self, db: Session = None) -> Dict:
+        """Return all dates within months that exist in MacroAnalysisState.year_month_date"""
+        if db is None:
+            db = next(get_db())
+
+        try:
+            # Step 1: Get distinct year-month values from the DB
+            results = db.query(MacroAnalysisState.year_month_date).distinct().all()
+            raw_dates = [r[0] for r in results if r[0]]
+
+            # Step 2: Normalize to year-month (e.g., '2025-03')
+            unique_months = set(dt.strftime("%Y-%m") for dt in raw_dates)
+
+            all_dates = []
+            month_labels = []
+
+            for ym in unique_months:
+                year, month = map(int, ym.split("-"))
+                _, last_day = monthrange(year, month)  # get number of days in the month
+
+                # Add all dates in this month
+                for day in range(1, last_day + 1):
+                    date_str = f"{year}-{str(month).zfill(2)}-{str(day).zfill(2)}"
+                    all_dates.append(date_str)
+
+                # Add to month label for dropdown
+                dt = datetime(year, month, 1)
+                month_labels.append(dt.strftime("%B %Y"))
+
+            return {
+                "dates": sorted(all_dates, reverse=True),
+                "months": sorted(month_labels, reverse=True)
+            }
+
+        except Exception as e:
+            print(f"Error retrieving available dates: {e}")
+            return {
+                "dates": [],
+                "months": [],
+                "error": "Unable to retrieve available dates"
+            }
     
     def get_economic_indicators(self, month: Optional[str] = None, db: Session = None) -> Dict:
         """Get economic indicators data for a specific month"""
@@ -164,6 +194,9 @@ class MacroService:
         for db_name, front_name in indicator_mapping.items():
             if db_name in indicator_data:
                 indicator_info = indicator_data[db_name]
+
+                if indicator_info is None:
+                    continue
                 
                 # Get the basic description
                 base_description = base_description_mapping.get(front_name, "")
@@ -190,20 +223,16 @@ class MacroService:
                 final_description = detailed_description if detailed_description else base_description
                 
                 # Ensure numeric values are properly handled
-                value = indicator_info.get("actual")
-                change = indicator_info.get("change")
-                previous = indicator_info.get('previous')
-                forecast = indicator_info.get('estimate')
-                
-                # Convert None to 0.0 or handle according to your needs
-                if value is None:
-                    value = 0.0
-                if change is None:
-                    change = 0.0
-                if previous is None:
-                    previous = 0.0
-                if forecast is None:
-                    forecast = 0.0
+                value = indicator_info.get("actual", 0.0) or 0.0
+                change = indicator_info.get("change", 0.0) or 0.0
+                previous = indicator_info.get("previous", 0.0) or 0.0
+                forecast = indicator_info.get("estimate", 0.0) or 0.0
+
+                if db_name in ["ADP_Nonfarm_Employment_Change", "Nonfarm_Payrolls"]:
+                    value *= 1000
+                    change *= 1000
+                    previous *= 1000
+                    forecast *= 1000    
                 
                 processed_indicators[front_name] = {
                     "value": value,

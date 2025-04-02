@@ -4,6 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/dist/style.css';
+
 
 import {
     fetchEconomicIndicators,
@@ -18,6 +21,7 @@ const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 };
+
 
 // Dummy data for macro analysis
 type MacroAnalysisData = {
@@ -489,7 +493,8 @@ const MacroPage = () => {
     const [loading, setLoading] = useState(true);
     const [activeIndicator, setActiveIndicator] = useState<keyof MacroAnalysisData['dates'][0]['economicIndicators']>('ismPMI');
 
-    
+    const enabledDays = availableDates.map(date => new Date(date));
+
     // Fetch available dates when component mounts
     useEffect(() => {
         const loadInitialData = async () => {
@@ -502,7 +507,7 @@ const MacroPage = () => {
 
                 // Set most recent date as default
                 const mostRecentDate = datesData.dates[0];
-                const mostRecentMonth = mostRecentDate.split('-').slice(0, 2).join(' ');
+                const mostRecentMonth = String(new Date(mostRecentDate).getMonth() + 1);
                 setSelectedDate(mostRecentDate);
 
                 // Fetch data for the most recent date
@@ -732,12 +737,14 @@ const MacroPage = () => {
 
                                     {/* Main indicator value and change - with enhanced styling */}
                                     <div className="flex items-baseline mb-6 bg-white p-4 rounded-lg shadow-sm">
-                                        {indicator ? (
-                                            <div className="text-4xl font-bold mr-4 text-blue-700">{formatValue(activeIndicator, indicator.value)}</div>
+                                        {indicator && indicator.value !== 0.0 ? (
+                                            <div className="text-4xl font-bold mr-4 text-blue-700">
+                                                {formatValue(activeIndicator, indicator.value)}
+                                            </div>
                                         ) : (
                                             <div className="text-4xl font-bold mr-4 text-gray-400">N/A</div>
                                         )}
-                                        {indicator ? (
+                                        {indicator && indicator.change !== 0.0 ? (
                                             <div className="text-lg">
                                                 Change: {formatChange(indicator.change)}
                                             </div>
@@ -753,15 +760,22 @@ const MacroPage = () => {
                                         <div className="grid grid-cols-2 gap-4 mb-6">
                                             <div className="bg-slate-50 p-4 rounded-lg shadow-sm border border-slate-100">
                                                 <div className="text-sm text-gray-500 mb-1 uppercase tracking-wider">Previous</div>
-                                                <div className="font-medium text-lg">{formatValue(activeIndicator, indicator.previous)}</div>
+                                                <div className="font-medium text-lg">
+                                                    {indicator.previous !== 0.0
+                                                        ? formatValue(activeIndicator, indicator.previous)
+                                                        : "N/A"}
+                                                </div>
                                             </div>
                                             <div className="bg-slate-50 p-4 rounded-lg shadow-sm border border-slate-100">
                                                 <div className="text-sm text-gray-500 mb-1 uppercase tracking-wider">Forecast</div>
-                                                <div className="font-medium text-lg">{formatValue(activeIndicator, indicator.forecast)}</div>
+                                                <div className="font-medium text-lg">
+                                                    {indicator.forecast !== 0.0
+                                                        ? formatValue(activeIndicator, indicator.forecast)
+                                                        : "N/A"}
+                                                </div>
                                             </div>
                                         </div>
                                     )}
-
                                     {/* AI Analysis with enhanced styling */}
                                     {indicator && (
                                         <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 p-5 rounded-lg border border-blue-100 relative overflow-hidden">
@@ -840,36 +854,41 @@ const MacroPage = () => {
                                 </svg>
                             </button>
                             {calendarOpen && (
-                                <div className="absolute top-full left-0 mt-1 bg-white shadow-xl rounded-md border border-blue-100 z-10 w-64">
-                                    <div className="p-3">
-                                        <div className="flex justify-between mb-2 border-b pb-2">
-                                            <div className="text-blue-800 font-medium">Select Date</div>
-                                            <button
-                                                className="text-blue-600 hover:text-blue-800 text-sm"
-                                                onClick={() => setCalendarOpen(false)}
-                                            >
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <div className="max-h-60 overflow-y-auto py-1">
-                                            {availableDates.map(date => (
-                                                <button
-                                                    key={date}
-                                                    className={`block w-full text-left px-4 py-2 text-sm rounded-md transition-colors ${date === selectedDate
-                                                        ? 'bg-blue-100 text-blue-800 font-medium'
-                                                        : 'hover:bg-gray-50 text-gray-700'
-                                                        }`}
-                                                    onClick={() => handleDateSelect(date)}
-                                                >
-                                                    {formatDate(date)}
-                                                </button>
-                                            ))}
-                                        </div>
+                                <div className="absolute top-full left-0 mt-1 bg-white shadow-xl rounded-md border border-blue-100 z-10 w-100 p-3">
+                                    <div className="flex justify-between mb-2 border-b pb-2">
+                                    <div className="text-blue-800 font-medium">Select Date</div>
+                                    <button
+                                        className="text-blue-600 hover:text-blue-800 text-sm"
+                                        onClick={() => setCalendarOpen(false)}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
                                     </div>
+
+                                    {/* Calendar Component */}
+                                    <DayPicker
+                                    selected={new Date(selectedDate)}
+                                    onDayClick={(date: Date) => {
+                                        const dateStr = date.toISOString().split('T')[0];
+                                        if (availableDates.includes(dateStr)) {
+                                        handleDateSelect(dateStr);
+                                        }
+                                    }}
+                                    modifiers={{
+                                        available: enabledDays,
+                                    }}
+                                    modifiersStyles={{
+                                        available: { backgroundColor: '#DBEAFE', color: '#1E40AF' }, // light blue
+                                    }}
+                                    disabled={(date: Date) => {
+                                        const dateStr = date.toISOString().split('T')[0];
+                                        return !availableDates.includes(dateStr);
+                                    }}
+                                    />
                                 </div>
-                            )}
+                                )}
                         </div>
                         <div className="ml-auto flex">
                             <button
