@@ -1,14 +1,15 @@
 
 'use client'
+
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
-// import {
-//     fetchEconomicIndicators,
-//     fetchFuturesData, // Will be implemented when API is available
-//     fetchFuturesSentiment, // Will be implemented when API is available
-//     fetchMarketNews
-// } from '@/services/api';
+import {
+    fetchFuturesData,
+    fetchFuturesSentiment,
+    fetchMarketNews
+} from '@/services/futures';
+import FuturesChart from '@/components/futures/FuturesChart';
 
 // Helper functions
 const formatDate = (dateString: string) => {
@@ -35,6 +36,7 @@ const FuturesPage = () => {
     const [loading, setLoading] = useState(true);
     interface MarketData {
         [key: string]: {
+            priceHistory: any[] | undefined;
             currentPrice: number;
             dailyChange: number;
             dailyChangePercent: number;
@@ -78,7 +80,7 @@ const FuturesPage = () => {
             }[];
         };
     }
-    
+
     interface NewsItem {
         id: number;
         title: string;
@@ -86,7 +88,7 @@ const FuturesPage = () => {
         tag: string;
         snippet: string;
     }
-    
+
     const [marketData, setMarketData] = useState<MarketData | null>(null);
     const [news, setNews] = useState<NewsItem[]>([]);
     const [showAiInsights, setShowAiInsights] = useState(true);
@@ -576,13 +578,24 @@ const FuturesPage = () => {
         const loadData = async () => {
             setLoading(true);
             try {
-                // When API is ready, replace with actual fetch calls
-                // const futuresData = await fetchFuturesData(selectedFuture);
-                // const sentimentData = await fetchFuturesSentiment(selectedFuture);
-                // const newsData = await fetchMarketNews('futures');
+                // Fetch data for the selected future
+                const futuresData = await fetchFuturesData(selectedFuture);
 
-                // For now, use dummy data
-                setMarketData(dummyMarketData);
+                // Debug log
+                console.log(`Received futures data for ${selectedFuture}:`, futuresData);
+                console.log("Price history:", futuresData.priceHistory);
+
+                // Update the market data state with the new data
+                setMarketData(prevData => {
+                    const updatedData = {
+                        ...prevData,
+                        [selectedFuture]: futuresData
+                    };
+                    console.log("Updated market data:", updatedData);
+                    return updatedData;
+                });
+
+                // Keep using dummy news for now
                 setNews(dummyNews);
 
                 setLoading(false);
@@ -593,7 +606,7 @@ const FuturesPage = () => {
         };
 
         loadData();
-    }, [selectedFuture, dummyMarketData, dummyNews]); // Added dummyMarketData and dummyNews to the dependency array
+    }, [selectedFuture]);
 
     // Get current future data
     const currentFutureData = useMemo(() => {
@@ -773,22 +786,31 @@ const FuturesPage = () => {
                             </div>
                         </div>
 
-                        {/* Chart placeholder */}
-                        <div className="w-full h-72 bg-gray-50 rounded-lg flex items-center justify-center mb-4">
-                            <div className="text-center text-gray-500">
-                                <svg
-                                    className="w-12 h-12 mx-auto text-gray-400 mb-2"
-                                    fill="none"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
-                                </svg>
-                                <p>Price chart for {selectedFuture} would appear here</p>
-                            </div>
+                        {/* Chart with improved data handling */}
+                        <div className="w-full h-72 bg-white rounded-lg mb-4 border border-gray-200">
+                            {currentFutureData && currentFutureData.priceHistory ? (
+                                <FuturesChart
+                                    priceHistory={currentFutureData.priceHistory}
+                                    symbol={selectedFuture}
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                    <div className="text-center text-gray-500">
+                                        <svg
+                                            className="w-12 h-12 mx-auto text-gray-400 mb-2"
+                                            fill="none"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                                        </svg>
+                                        <p>Price chart for {selectedFuture} would appear here</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Key levels */}
@@ -885,7 +907,7 @@ const FuturesPage = () => {
                     {activeTab === 'market-intelligence' && currentFutureData && (
                         <div>
                             {/* AI Analysis Section */}
-                            {showAiInsights && (
+                            {showAiInsights && currentFutureData && (
                                 <div className="mb-6 relative overflow-hidden rounded-lg shadow-md bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100">
                                     <div className="absolute top-0 right-0 w-24 h-24 opacity-5">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-blue-800" viewBox="0 0 20 20" fill="currentColor">
@@ -908,19 +930,29 @@ const FuturesPage = () => {
                                             </div>
                                         </div>
 
+                                        {/* Add null checks for aiAnalysis and its properties */}
                                         <div className="bg-white bg-opacity-70 rounded-lg p-4 mb-4 border border-blue-100">
                                             <h3 className="font-medium text-blue-800 mb-2">Summary</h3>
-                                            <p className="text-gray-800">{currentFutureData.aiAnalysis.summary}</p>
+                                            <p className="text-gray-800">
+                                                {currentFutureData.aiAnalysis?.summary ||
+                                                    `${currentContractName} futures analysis is currently being generated. Check back shortly for insights.`}
+                                            </p>
                                         </div>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                             <div className="bg-white bg-opacity-70 rounded-lg p-4 border border-blue-100">
                                                 <h3 className="font-medium text-blue-800 mb-2">Key Price Levels</h3>
-                                                <p className="text-gray-800">{currentFutureData.aiAnalysis.keyLevels}</p>
+                                                <p className="text-gray-800">
+                                                    {currentFutureData.aiAnalysis?.keyLevels ||
+                                                        `Support at ${currentFutureData.support?.[0]} and resistance at ${currentFutureData.resistance?.[0]}.`}
+                                                </p>
                                             </div>
                                             <div className="bg-white bg-opacity-70 rounded-lg p-4 border border-blue-100">
                                                 <h3 className="font-medium text-blue-800 mb-2">Unusual Activity</h3>
-                                                <p className="text-gray-800">{currentFutureData.aiAnalysis.unusualActivity}</p>
+                                                <p className="text-gray-800">
+                                                    {currentFutureData.aiAnalysis?.unusualActivity ||
+                                                        "No unusual activity detected in current trading patterns."}
+                                                </p>
                                             </div>
                                         </div>
 
@@ -930,22 +962,32 @@ const FuturesPage = () => {
                                                 <div>
                                                     <h4 className="text-sm font-medium text-gray-600 mb-1">Strengthening Correlations</h4>
                                                     <ul className="list-disc list-inside text-gray-800 text-sm">
-                                                        {currentFutureData.aiAnalysis.correlations.strengthening.map((item, index) => (
-                                                            <li key={index}>{item}</li>
-                                                        ))}
+                                                        {currentFutureData.aiAnalysis?.correlations?.strengthening ? (
+                                                            currentFutureData.aiAnalysis.correlations.strengthening.map((item, index) => (
+                                                                <li key={index}>{item}</li>
+                                                            ))
+                                                        ) : (
+                                                            <li>No data available</li>
+                                                        )}
                                                     </ul>
                                                 </div>
                                                 <div>
                                                     <h4 className="text-sm font-medium text-gray-600 mb-1">Weakening Correlations</h4>
                                                     <ul className="list-disc list-inside text-gray-800 text-sm">
-                                                        {currentFutureData.aiAnalysis.correlations.weakening.map((item, index) => (
-                                                            <li key={index}>{item}</li>
-                                                        ))}
+                                                        {currentFutureData.aiAnalysis?.correlations?.weakening ? (
+                                                            currentFutureData.aiAnalysis.correlations.weakening.map((item, index) => (
+                                                                <li key={index}>{item}</li>
+                                                            ))
+                                                        ) : (
+                                                            <li>No data available</li>
+                                                        )}
                                                     </ul>
                                                 </div>
                                                 <div>
                                                     <h4 className="text-sm font-medium text-gray-600 mb-1">Anomalies</h4>
-                                                    <p className="text-gray-800 text-sm">{currentFutureData.aiAnalysis.correlations.anomalies}</p>
+                                                    <p className="text-gray-800 text-sm">
+                                                        {currentFutureData.aiAnalysis?.correlations?.anomalies || "No anomalies detected"}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
