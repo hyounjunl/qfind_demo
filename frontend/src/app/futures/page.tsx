@@ -17,10 +17,13 @@ const formatDate = (dateString: string) => {
     return date.toLocaleDateString('en-US', options);
 };
 
-const formatNumber = (num: number) => {
+const formatNumber = (num: number, symbol: string) => {
+    const fxSymbols = ['E6', 'J6'];
+    const maxDigits = symbol && fxSymbols.includes(symbol) ? 5 : 2;
+
     return new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        maximumFractionDigits: maxDigits
     }).format(num);
 };
 
@@ -98,26 +101,26 @@ const FuturesPage = () => {
         { symbol: 'ZB', name: '30-Year U.S. Treasury Bonds', exchange: 'CBOT' },
         { symbol: 'ZN', name: '10-Year U.S. Treasury Notes', exchange: 'CBOT' },
         { symbol: 'ZF', name: '5-Year U.S. Treasury Notes', exchange: 'CBOT' },
-        { symbol: '6E', name: 'Euro FX', exchange: 'CME' },
-        { symbol: '6J', name: 'Japanese Yen', exchange: 'CME' }
+        { symbol: 'E6', name: 'Euro FX', exchange: 'CME' },
+        { symbol: 'J6', name: 'Japanese Yen', exchange: 'CME' }
     ], []);
 
     // Dummy market data - would be replaced with API data
     const dummyMarketData = useMemo(() => ({
         ES: {
-            currentPrice: 5274.25,
-            dailyChange: 32.50,
-            dailyChangePercent: 0.62,
-            volume: 1245678,
-            openInterest: 2876543,
-            volatility: 14.2,
-            support: [5220, 5180, 5150],
-            resistance: [5300, 5350, 5400],
-            sentiment: 0.65, // Scale from -1 (bearish) to 1 (bullish)
+            currentPrice: 5657.75,
+            dailyChange: -17.25,
+            dailyChangePercent: -0.30,
+            volume: 105640,
+            openInterest: 2100000,
+            volatility: 1.37,
+            support: [5608.22, 5563.19, 5518.16],
+            resistance: [5698.28, 5743.31, 5788.34],
+            sentiment: 0.44, // Scale from -1 (bearish) to 1 (bullish)
             aiAnalysis: {
-                summary: "The E-mini S&P 500 futures are showing strong momentum with above-average volume. Recent price action suggests accumulation by institutional investors, with key resistance at 5300 being tested. Economic indicators point to a supportive environment for equity futures in the near term.",
-                keyLevels: "Watch for potential breakout above 5300, which could trigger a move toward 5350. Support at 5220 has been reinforced by recent trading patterns.",
-                unusualActivity: "Significant options activity detected at the 5300 strike price for the current month expiration.",
+                summary: "The E-mini S&P 500 futures are currently trading at 5657.75, showing a slight decline (-0.30%). The current price is moving between the first resistance level (5698.28) and the first support level (5608.22). Recent price action indicates a short-term consolidation pattern around the 5650 level, with the market seemingly waiting for a catalyst to determine the next directional move.",
+                keyLevels: "A key level to watch is the primary resistance at 5698.28, where a breakthrough could trigger additional upside movement toward 5743.31. On the downside, 5608.22 serves as an important first support level, and if broken, could lead to a decline toward 5563.19.",
+                unusualActivity: "Significant options activity has been detected near the 5700 strike price for the current month expiration, suggesting this price zone is an important psychological level in the short term. There's also increasing put option positioning around 5600, creating a dual support/resistance zone.",
                 correlations: {
                     strengthening: ["NQ", "YM"],
                     weakening: ["GC", "ZB"],
@@ -126,7 +129,7 @@ const FuturesPage = () => {
                 riskAssessment: {
                     overnightGapRisk: "Moderate",
                     volatilityOutlook: "Expected to remain within 13-16 range",
-                    eventRisks: ["FOMC minutes tomorrow", "CPI data on Thursday"]
+                    eventRisks: ["Maintaining a Freeze on Interest Rates", "Possible mention of inflation concerns"]
                 }
             },
             calendarSpreads: [
@@ -139,26 +142,26 @@ const FuturesPage = () => {
                 averageReturn: "+2.3% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 5272.50, volume: 1245, note: "Rejected at resistance" },
-                { time: "10:15 AM", price: 5281.75, volume: 3421, note: "High volume test of 5280" },
-                { time: "9:45 AM", price: 5265.00, volume: 2145, note: "Support bounce" },
-                { time: "9:30 AM", price: 5258.25, volume: 4532, note: "Opening range" },
+                { time: "10:35 AM", price: 5640.50, volume: 1245, note: "Rejected at resistance" },
+                { time: "10:15 AM", price: 5677.75, volume: 3421, note: "High volume test of 5670" },
+                { time: "9:45 AM", price: 5655.00, volume: 2145, note: "Support bounce" },
+                { time: "9:30 AM", price: 5650.25, volume: 4532, note: "Opening range" },
             ]
         },
         NQ: {
-            currentPrice: 18235.75,
-            dailyChange: 145.50,
-            dailyChangePercent: 0.80,
-            volume: 987654,
-            openInterest: 1876543,
-            volatility: 18.7,
-            support: [18050, 17900, 17800],
-            resistance: [18300, 18450, 18600],
+            currentPrice: 19526.75,
+            dailyChange: -86.50,
+            dailyChangePercent: -0.43,
+            volume: 52840,
+            openInterest: 248720,
+            volatility: 1.7,
+            support: [19242.94, 19046.39, 18849.83],
+            resistance: [19636.06, 19832.61, 20029.17],
             sentiment: 0.78,
             aiAnalysis: {
-                summary: "Nasdaq futures showing relative strength compared to other equity indices. Technology sector earnings have been driving positive sentiment. The current momentum appears sustainable with strong underlying fundamentals.",
-                keyLevels: "Critical resistance at 18300 - a breakthrough could accelerate the move. Strong support established at 18050 based on recent consolidation pattern.",
-                unusualActivity: "Block trades detected in the last session suggest institutional positioning ahead of major tech earnings.",
+                summary: "E-mini Nasdaq-100 futures are trading at 19526.75, down 0.43% (-86.50 points) for the session. Despite the slight pullback, the contract is holding within a defined range between the first support (19242.94) and first resistance (19636.06) levels. Recent technology sector price action suggests traders are evaluating current valuations after the extended rally.",
+                keyLevels: "The immediate resistance to watch is at 19636.06, with a breakthrough potentially opening the path toward the 19832.61 level. On the downside, initial support at 19242.94 will be critical to maintain the current structure, with deeper support at 19046.39 serving as a secondary cushion.",
+                unusualActivity: "Notable options activity has been observed around the 19500 strike price, indicating traders are positioning for near-term volatility. Recent volume patterns suggest institutional hedging ahead of upcoming technology sector earnings announcements.",
                 correlations: {
                     strengthening: ["SOX (Semiconductor Index)", "SMH (Semiconductor ETF)"],
                     weakening: ["XLU (Utilities)", "KRE (Regional Banks)"],
@@ -180,26 +183,67 @@ const FuturesPage = () => {
                 averageReturn: "+1.8% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 18232.50, volume: 845, note: "Testing session high" },
-                { time: "10:15 AM", price: 18198.75, volume: 1421, note: "Bounce from VWAP" },
-                { time: "9:45 AM", price: 18176.50, volume: 1045, note: "Consolidation" },
-                { time: "9:30 AM", price: 18165.25, volume: 2532, note: "Opening range" },
+                { time: "10:35 AM", price: 19536.50, volume: 845, note: "Testing session high" },
+                { time: "10:15 AM", price: 19456.75, volume: 1421, note: "Bounce from VWAP" },
+                { time: "9:45 AM", price: 19333.50, volume: 1045, note: "Consolidation" },
+                { time: "9:30 AM", price: 19433.25, volume: 2532, note: "Opening range" },
+            ]
+        },
+        YM: {
+            currentPrice: 42145,
+            dailyChange: -94,
+            dailyChangePercent: -0.22,
+            volume: 12540,
+            openInterest: 74400,
+            volatility: 1.7,
+            support: [41946, 41633, 41320],
+            resistance: [42572, 42885, 43198],
+            sentiment: 0.78,
+            aiAnalysis: {
+                summary: "E-mini Dow Futures are currently trading at 42145, down slightly by 0.22% (-94 points) in the session. The contract is positioned between immediate support at 41946 and resistance at 42572, showing consolidation after recent market movements. Trading volume remains consistent with 30-day averages, suggesting balanced institutional participation.",
+                keyLevels: "Primary resistance at 42572 is the key level to watch for potential breakout momentum. A move above this level could target 42885. On the downside, initial support at 41946 needs to hold to maintain the current structure, with the next significant level at 41633 if selling pressure increases.",
+                unusualActivity: "Recent options flow shows increased activity around the 42000 strike price, indicating this psychological level is attracting trader attention. Open interest patterns suggest potential hedging activity ahead of upcoming economic data releases.",
+                correlations: {
+                    strengthening: ["SOX (Semiconductor Index)", "SMH (Semiconductor ETF)"],
+                    weakening: ["XLU (Utilities)", "KRE (Regional Banks)"],
+                    anomalies: "The NQ/ES ratio is approaching extreme levels, suggesting potential mean reversion."
+                },
+                riskAssessment: {
+                    overnightGapRisk: "Elevated due to tech earnings schedule",
+                    volatilityOutlook: "Likely to expand during earnings season",
+                    eventRisks: ["NVIDIA earnings next week", "Fed speakers discussing tech valuations"]
+                }
+            },
+            calendarSpreads: [
+                { frontMonth: "Jun 2025", backMonth: "Sep 2025", spread: -35.25, zScore: 1.8 },
+                { frontMonth: "Sep 2025", backMonth: "Dec 2025", spread: -28.50, zScore: 0.7 }
+            ],
+            seasonalPatterns: {
+                currentPhase: "Historically mixed in late April",
+                consistency: "60% positive in this period since 2010",
+                averageReturn: "+1.8% over next 30 days historically"
+            },
+            recentActivity: [
+                { time: "10:35 AM", price: 42045.50, volume: 845, note: "Testing session high" },
+                { time: "10:15 AM", price: 42078.75, volume: 1421, note: "Bounce from VWAP" },
+                { time: "9:45 AM", price: 42122.50, volume: 1045, note: "Consolidation" },
+                { time: "9:30 AM", price: 42200.25, volume: 2532, note: "Opening range" },
             ]
         },
         CL: {
-            currentPrice: 82.35,
-            dailyChange: -1.15,
-            dailyChangePercent: -1.38,
-            volume: 654321,
-            openInterest: 1576543,
+            currentPrice: 71.19,
+            dailyChange: -0.01,
+            dailyChangePercent: -0.01,
+            volume: 33830,
+            openInterest: 30745,
             volatility: 24.5,
-            support: [81.50, 80.75, 79.80],
-            resistance: [83.20, 84.50, 85.75],
+            support: [70.87, 70.27, 69.66],
+            resistance: [72.09, 72.69, 73.30],
             sentiment: -0.15,
             aiAnalysis: {
-                summary: "Crude oil futures are experiencing downward pressure due to global demand concerns and higher-than-expected inventory builds. Technical signals suggest a potential consolidation phase before the next directional move.",
-                keyLevels: "The 82.00 level represents a psychological support that's being tested. The 200-day moving average at 81.50 provides additional technical support.",
-                unusualActivity: "Significant put option activity at the 80.00 strike suggests hedging against further downside.",
+                summary: "Crude Oil Futures are essentially flat at 71.19, showing minimal change (-0.01%) in today's session. Price action remains contained within a narrow range between immediate support at 70.87 and resistance at 72.09. Recent consolidation reflects market uncertainty regarding global demand forecasts and inventory reports.",
+                keyLevels: "The immediate resistance at 72.09 represents a significant hurdle for bulls, with a breakthrough potentially accelerating momentum toward 72.69. On the downside, support at 70.87 is crucial to maintain the current structure; a break below could trigger increased selling pressure toward the 70.27 level.",
+                unusualActivity: "Unusual spread trading has been observed between front-month and deferred contracts, suggesting changing market expectations about the future supply-demand balance. Options market activity shows increased put buying near the 70.00 strike, indicating growing downside protection interest among traders.",
                 correlations: {
                     strengthening: ["XLE (Energy ETF)", "USD/RUB"],
                     weakening: ["Gold", "Inflation expectations"],
@@ -221,27 +265,27 @@ const FuturesPage = () => {
                 averageReturn: "+3.2% in May historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 82.32, volume: 975, note: "Rejected at VWAP" },
-                { time: "10:15 AM", price: 82.56, volume: 1245, note: "Failed test of 82.50" },
-                { time: "9:45 AM", price: 82.28, volume: 854, note: "Support test" },
-                { time: "9:30 AM", price: 82.42, volume: 1532, note: "Opening range" },
+                { time: "10:35 AM", price: 71.32, volume: 975, note: "Rejected at VWAP" },
+                { time: "10:15 AM", price: 70.56, volume: 1245, note: "Failed test of 70.50" },
+                { time: "9:45 AM", price: 72.28, volume: 854, note: "Support test" },
+                { time: "9:30 AM", price: 69.42, volume: 1532, note: "Opening range" },
             ]
         },
         // Additional futures contracts would be added here
         GC: {
-            currentPrice: 2342.80,
-            dailyChange: 15.60,
-            dailyChangePercent: 0.67,
-            volume: 432567,
-            openInterest: 1245678,
+            currentPrice: 3162.8,
+            dailyChange: 16.5,
+            dailyChangePercent: 0.53,
+            volume: 64170,
+            openInterest: 402850,
             volatility: 16.8,
-            support: [2320, 2300, 2275],
-            resistance: [2350, 2380, 2400],
+            support: [3123.2, 3096.1, 3069.0],
+            resistance: [3177.4, 3204.5, 3231.6],
             sentiment: 0.45,
             aiAnalysis: {
-                summary: "Gold futures continue to find support from economic uncertainty and inflation concerns. Technical picture remains bullish with a series of higher lows forming on the daily chart.",
-                keyLevels: "Key resistance at $2350 is being tested - a breakthrough could target the all-time high. Strong support at $2320 from recent consolidation.",
-                unusualActivity: "Unusual increase in call option activity at $2400 strike for June expiration.",
+                summary: "Gold Futures are showing positive momentum, trading at 3162.8 with a gain of 0.53% (+16.5 points) in the current session. The precious metal is approaching key resistance at 3177.4 while maintaining a comfortable cushion above the nearest support at 3123.2. Recent strength appears driven by inflation concerns and geopolitical tensions supporting safe-haven demand.",
+                keyLevels: "The immediate resistance at 3177.4 is critical for continued bullish momentum; a breakthrough could accelerate gains toward the 3204.5 level. On the downside, initial support at 3123.2 should provide a foundation for buyers, with stronger support established at 3096.1 if profit-taking emerges.",
+                unusualActivity: "Significant call option activity has been detected at the 3200 strike price for near-term expiration dates, suggesting traders are positioning for potential upside continuation. Open interest has notably increased in the last two sessions, indicating fresh capital entering the gold market.",
                 correlations: {
                     strengthening: ["Silver", "Treasury Bonds"],
                     weakening: ["USD Index", "Real Yields"],
@@ -263,26 +307,26 @@ const FuturesPage = () => {
                 averageReturn: "+1.1% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 2342.50, volume: 845, note: "Resistance test" },
-                { time: "10:15 AM", price: 2338.20, volume: 1240, note: "20-period EMA bounce" },
-                { time: "9:45 AM", price: 2335.60, volume: 965, note: "Support level hold" },
-                { time: "9:30 AM", price: 2336.80, volume: 1845, note: "Opening range" },
+                { time: "10:35 AM", price: 3043.58, volume: 845, note: "Resistance test" },
+                { time: "10:15 AM", price: 3132.66, volume: 1240, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 3165.42, volume: 965, note: "Support level hold" },
+                { time: "9:30 AM", price: 3200.81, volume: 1845, note: "Opening range" },
             ]
         },
         ZB: {
-            currentPrice: 118.06,
-            dailyChange: -0.17,
-            dailyChangePercent: -0.14,
-            volume: 354821,
-            openInterest: 964532,
+            currentPrice: 118.17,
+            dailyChange: -0.02,
+            dailyChangePercent: -0.05,
+            volume: 69330,
+            openInterest: 1840000,
             volatility: 12.3,
-            support: [117.80, 117.25, 116.75],
-            resistance: [118.50, 119.00, 119.75],
+            support: [116.28, 116.16, 116.03],
+            resistance: [117.22, 118.02, 118.15],
             sentiment: -0.25,
             aiAnalysis: {
-                summary: "Treasury bond futures under pressure due to persistent inflation concerns and expectations for fewer Fed rate cuts. Technical picture shows a consolidation pattern after the recent decline.",
-                keyLevels: "Immediate support at 117.80 is critical - breaking below could accelerate selling. Resistance at 118.50 has been firm.",
-                unusualActivity: "Unusual put/call ratio with elevated volume in July puts.",
+                summary: "T-Bond Futures are trading at 118.17, showing minimal change (-0.05%) in the current session. The contract has moved above all identified resistance levels, suggesting strong bullish momentum in the Treasury market. Recent bond strength reflects shifting market expectations regarding the Federal Reserve's monetary policy trajectory and growing concerns about economic growth.",
+                keyLevels: "With price currently trading above the listed resistance levels, the 118.15 level now serves as immediate support, followed by 118.02. For potential extended moves higher, traders should watch for psychological resistance at the 119.00 level. The previously established support at 116.28 represents a significant downside cushion.",
+                unusualActivity: "Unusual spread trading activity has been observed between the front-month and back-month contracts, potentially indicating changing expectations about the yield curve. Open interest has increased notably in recent sessions despite relatively tight trading ranges, suggesting accumulation rather than speculative positioning.",
                 correlations: {
                     strengthening: ["Utility stocks", "Gold"],
                     weakening: ["Financial sector", "Small caps"],
@@ -309,7 +353,171 @@ const FuturesPage = () => {
                 { time: "9:45 AM", price: 118.21, volume: 754, note: "Failed breakout attempt" },
                 { time: "9:30 AM", price: 118.15, volume: 1243, note: "Opening range" },
             ]
-        }
+        },
+        ZN: {
+            currentPrice: 111.27,
+            dailyChange: 0.02,
+            dailyChangePercent: 0.06,
+            volume: 489570,
+            openInterest: 4890000,
+            volatility: 16.8,
+            support: [111.03, 110.56, 110.46],
+            resistance: [111.25, 111.36, 111.46],
+            sentiment: 0.45,
+            aiAnalysis: {
+                summary: "10 Year T-Note Futures are trading slightly higher at 111.27, up 0.06% (+0.02 points) in the current session. The contract has just broken above immediate resistance at 111.25, potentially signaling further upside momentum. This modest strength comes amid mixed economic data and continued market assessment of the Federal Reserve's policy outlook.",
+                keyLevels: "Having just overcome the first resistance level at 111.25, the next hurdle for bulls is at 111.36, which if breached could extend the rally toward 111.46. Immediate support now rests at 111.03, which should hold to maintain the current bullish structure.",
+                unusualActivity: "There has been a notable increase in call option activity at the 112.00 strike price, suggesting some traders are positioning for continued yield declines. Trading volumes are above the 20-day average, indicating heightened interest in Treasury futures as market participants reassess interest rate expectations.",
+                correlations: {
+                    strengthening: ["Silver", "Treasury Bonds"],
+                    weakening: ["USD Index", "Real Yields"],
+                    anomalies: "Correlation with equity markets has turned positive recently, breaking from historical pattern."
+                },
+                riskAssessment: {
+                    overnightGapRisk: "Low to moderate",
+                    volatilityOutlook: "Expected to decrease after recent price surge",
+                    eventRisks: ["Fed speakers tomorrow", "Employment data Friday"]
+                }
+            },
+            calendarSpreads: [
+                { frontMonth: "Jun 2025", backMonth: "Aug 2025", spread: -2.40, zScore: 0.3 },
+                { frontMonth: "Aug 2025", backMonth: "Dec 2025", spread: -6.80, zScore: 0.6 }
+            ],
+            seasonalPatterns: {
+                currentPhase: "Historically neutral to slightly positive (Apr-May)",
+                consistency: "60% of years show positive returns in this period",
+                averageReturn: "+1.1% over next 30 days historically"
+            },
+            recentActivity: [
+                { time: "10:35 AM", price: 111.34, volume: 845, note: "Resistance test" },
+                { time: "10:15 AM", price: 111.43, volume: 1240, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 111.56, volume: 965, note: "Support level hold" },
+                { time: "9:30 AM", price: 111.24, volume: 1845, note: "Opening range" },
+            ]
+        },
+        ZF: {
+            currentPrice: 108.16,
+            dailyChange: 0.01,
+            dailyChangePercent: 0.04,
+            volume: 244290,
+            openInterest: 6520000,
+            volatility: 16.8,
+            support: [108.007, 107.121, 107.108],
+            resistance: [108.033, 108.047, 108.060],
+            sentiment: 0.45,
+            aiAnalysis: {
+                summary: "5-Year T-Note Futures are trading marginally higher at 108.16, showing a slight gain of 0.04% (+0.01 points) in the current session. The contract is trading above all listed resistance levels, indicating strong underlying demand for medium-term Treasuries. This positioning suggests the market is anticipating a more dovish Federal Reserve policy trajectory in the coming months.",
+                keyLevels: "Having already cleared the highest listed resistance at 108.060, the next level to watch is the psychological round number at 108.25. Immediate support has formed at 108.033, with more significant support at 108.007, which needs to hold to maintain the current positive momentum.",
+                unusualActivity: "A notable increase in trading activity has been observed in calendar spreads between 5-Year and 2-Year futures, suggesting changing expectations about the yield curve shape. Institutional positioning reports indicate increasing long interest in 5-Year futures, potentially reflecting portfolio duration adjustments ahead of upcoming economic data releases.",
+                correlations: {
+                    strengthening: ["Silver", "Treasury Bonds"],
+                    weakening: ["USD Index", "Real Yields"],
+                    anomalies: "Correlation with equity markets has turned positive recently, breaking from historical pattern."
+                },
+                riskAssessment: {
+                    overnightGapRisk: "Low to moderate",
+                    volatilityOutlook: "Expected to decrease after recent price surge",
+                    eventRisks: ["Fed speakers tomorrow", "Employment data Friday"]
+                }
+            },
+            calendarSpreads: [
+                { frontMonth: "Jun 2025", backMonth: "Aug 2025", spread: -2.40, zScore: 0.3 },
+                { frontMonth: "Aug 2025", backMonth: "Dec 2025", spread: -6.80, zScore: 0.6 }
+            ],
+            seasonalPatterns: {
+                currentPhase: "Historically neutral to slightly positive (Apr-May)",
+                consistency: "60% of years show positive returns in this period",
+                averageReturn: "+1.1% over next 30 days historically"
+            },
+            recentActivity: [
+                { time: "10:35 AM", price: 108.44, volume: 845, note: "Resistance test" },
+                { time: "10:15 AM", price: 108.23, volume: 1240, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 108.24, volume: 965, note: "Support level hold" },
+                { time: "9:30 AM", price: 108.34, volume: 1845, note: "Opening range" },
+            ]
+        },
+        E6: {
+            currentPrice: 1.08440,
+            dailyChange: 0.00115,
+            dailyChangePercent: 0.11,
+            volume: 46700,
+            openInterest: 650590,
+            volatility: 16.8,
+            support: [1.08059, 1.07497, 1.06936],
+            resistance: [1.09181, 1.09743, 1.10304],
+            sentiment: 0.45,
+            aiAnalysis: {
+                summary: "Euro FX Futures are trading slightly higher at 1.08440, up 0.11% (+0.00115) in today's session. The contract is maintaining a position above its immediate support at 1.08059 while remaining below the first resistance level at 1.09181. Recent price action suggests consolidation as markets evaluate diverging monetary policy paths between the European Central Bank and the Federal Reserve.",
+                keyLevels: "The immediate resistance at 1.09181 represents a significant barrier that bulls need to overcome for continued upward momentum. On the downside, support at 1.08059 is crucial to watch; a breach could accelerate selling pressure toward the next support level at 1.07497.",
+                unusualActivity: "Options market data shows increased activity at the 1.0900 strike price, suggesting traders are positioning for potential near-term volatility around this psychological level. The put/call ratio has declined in recent sessions, indicating a shift toward more bullish sentiment among derivatives traders.",
+                correlations: {
+                    strengthening: ["Silver", "Treasury Bonds"],
+                    weakening: ["USD Index", "Real Yields"],
+                    anomalies: "Correlation with equity markets has turned positive recently, breaking from historical pattern."
+                },
+                riskAssessment: {
+                    overnightGapRisk: "Low to moderate",
+                    volatilityOutlook: "Expected to decrease after recent price surge",
+                    eventRisks: ["Fed speakers tomorrow", "Employment data Friday"]
+                }
+            },
+            calendarSpreads: [
+                { frontMonth: "Jun 2025", backMonth: "Aug 2025", spread: -2.40, zScore: 0.3 },
+                { frontMonth: "Aug 2025", backMonth: "Dec 2025", spread: -6.80, zScore: 0.6 }
+            ],
+            seasonalPatterns: {
+                currentPhase: "Historically neutral to slightly positive (Apr-May)",
+                consistency: "60% of years show positive returns in this period",
+                averageReturn: "+1.1% over next 30 days historically"
+            },
+            recentActivity: [
+                { time: "10:35 AM", price: 1.08340, volume: 845, note: "Resistance test" },
+                { time: "10:15 AM", price: 1.06365, volume: 1240, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 1.07321, volume: 965, note: "Support level hold" },
+                { time: "9:30 AM", price: 1.08455, volume: 1845, note: "Opening range" },
+            ]
+        },
+        J6: {
+            currentPrice: 0.0067545,
+            dailyChange: 0.0000040,
+            dailyChangePercent: 0.06,
+            volume: 489570,
+            openInterest: 4890000,
+            volatility: 16.8,
+            support: [0.0066990, 0.0066790, 0.0066591],
+            resistance: [0.0067390, 0.0067590, 0.0067790],
+            sentiment: 0.45,
+            aiAnalysis: {
+                summary: "Japanese Yen Futures are trading slightly higher at 0.0067545, up 0.06% in the current session. The contract is trading above its first resistance level at 0.0067390 and approaching the second resistance at 0.0067590. This modest strength comes amid ongoing speculation about potential Bank of Japan policy adjustments and shifting interest rate differentials.",
+                keyLevels: "Having overcome the first resistance at 0.0067390, the next hurdle is at 0.0067590, which if breached could extend gains toward 0.0067790. Initial support now sits at 0.0066990, which needs to hold to maintain the current upward bias.",
+                unusualActivity: "There has been an increase in futures positioning ahead of upcoming Bank of Japan policy meetings, with speculative accounts reducing short positions. Options market activity shows growing interest in upside protection, potentially reflecting concerns about continued yen strength and its impact on export-oriented Japanese companies.",
+                correlations: {
+                    strengthening: ["Silver", "Treasury Bonds"],
+                    weakening: ["USD Index", "Real Yields"],
+                    anomalies: "Correlation with equity markets has turned positive recently, breaking from historical pattern."
+                },
+                riskAssessment: {
+                    overnightGapRisk: "Low to moderate",
+                    volatilityOutlook: "Expected to decrease after recent price surge",
+                    eventRisks: ["Fed speakers tomorrow", "Employment data Friday"]
+                }
+            },
+            calendarSpreads: [
+                { frontMonth: "Jun 2025", backMonth: "Aug 2025", spread: -2.40, zScore: 0.3 },
+                { frontMonth: "Aug 2025", backMonth: "Dec 2025", spread: -6.80, zScore: 0.6 }
+            ],
+            seasonalPatterns: {
+                currentPhase: "Historically neutral to slightly positive (Apr-May)",
+                consistency: "60% of years show positive returns in this period",
+                averageReturn: "+1.1% over next 30 days historically"
+            },
+            recentActivity: [
+                { time: "10:35 AM", price: 0.0067523, volume: 845, note: "Resistance test" },
+                { time: "10:15 AM", price: 0.0067454, volume: 1240, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 0.00675434, volume: 965, note: "Support level hold" },
+                { time: "9:30 AM", price: 0.0067528, volume: 1845, note: "Opening range" },
+            ]
+        },
     }), []);
 
     // Dummy news related to futures - would be replaced with API data
@@ -591,7 +799,7 @@ const FuturesPage = () => {
                                     {currentFutureData.support.map((level, index) => (
                                         <div key={`support-${index}`} className="flex items-center">
                                             <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
-                                            <span className="font-medium">{formatNumber(level)}</span>
+                                            <span className="font-medium">{formatNumber(level, selectedFuture)}</span>
                                             {index === 0 && (
                                                 <span className="ml-2 px-1.5 py-0.5 text-xs bg-green-100 text-green-800 rounded">
                                                     Strong
@@ -607,7 +815,7 @@ const FuturesPage = () => {
                                     {currentFutureData.resistance.map((level, index) => (
                                         <div key={`resistance-${index}`} className="flex items-center">
                                             <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
-                                            <span className="font-medium">{formatNumber(level)}</span>
+                                            <span className="font-medium">{formatNumber(level, selectedFuture)}</span>
                                             {index === 0 && (
                                                 <span className="ml-2 px-1.5 py-0.5 text-xs bg-red-100 text-red-800 rounded">
                                                     Critical
@@ -1284,13 +1492,13 @@ const FuturesPage = () => {
                                                 <div className="flex justify-between items-center mb-1">
                                                     <span className="text-gray-700">Initial Margin</span>
                                                     <span className="font-bold text-gray-900">
-                                                        {selectedFuture === 'ES' ? '$12,650' : selectedFuture === 'NQ' ? '$17,500' : '$6,900'}
+                                                        {selectedFuture === 'ES' ? '$12133.60' : selectedFuture === 'NQ' ? '$22177.49' : selectedFuture === 'YM' ? '$8713.45' : selectedFuture === 'CL' ? '$16510.00' : selectedFuture === 'CL' ? '$22263.81' : selectedFuture === 'ZB' ? '$5839.10' : selectedFuture === 'ZN' ? '$2914.54' : selectedFuture === 'ZF' ? '$1855.38' : selectedFuture === 'E6' ? '$4266.29' : '$3795'}
                                                     </span>
                                                 </div>
                                                 <div className="flex justify-between items-center">
                                                     <span className="text-gray-700">Maintenance Margin</span>
                                                     <span className="font-bold text-gray-900">
-                                                        {selectedFuture === 'ES' ? '$11,500' : selectedFuture === 'NQ' ? '$15,800' : '$6,250'}
+                                                        {selectedFuture === 'ES' ? '$10986.50' : selectedFuture === 'NQ' ? '$19909.99' : selectedFuture === 'YM' ? '$7536.90' : 'N/A'}
                                                     </span>
                                                 </div>
                                             </div>
