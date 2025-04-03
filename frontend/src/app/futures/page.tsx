@@ -6,8 +6,8 @@ import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
 import {
     fetchFuturesData,
-    fetchFuturesSentiment,
-    fetchMarketNews
+    // fetchFuturesSentiment,
+    // fetchMarketNews
 } from '@/services/futures';
 import FuturesChart from '@/components/futures/FuturesChart';
 
@@ -720,11 +720,11 @@ const FuturesPage = () => {
                             </div>
 
                             <div className="flex flex-col items-end">
-                                <div className="text-3xl font-bold">{formatNumber(currentFutureData.currentPrice)}</div>
+                                <div className="text-3xl font-bold">{formatNumber(currentFutureData.currentPrice, selectedFuture)}</div>
                                 <div className={`flex items-center text-${currentFutureData.dailyChange >= 0 ? 'green' : 'red'}-600`}>
                                     <span>
                                         {currentFutureData.dailyChange >= 0 ? '+' : ''}
-                                        {formatNumber(currentFutureData.dailyChange)} ({currentFutureData.dailyChange >= 0 ? '+' : ''}
+                                        {formatNumber(currentFutureData.dailyChange, selectedFuture)} ({currentFutureData.dailyChange >= 0 ? '+' : ''}
                                         {currentFutureData.dailyChangePercent.toFixed(2)}%)
                                     </span>
                                     <svg
@@ -1020,7 +1020,7 @@ const FuturesPage = () => {
                                             {currentFutureData.recentActivity.map((activity, index) => (
                                                 <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{activity.time}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatNumber(activity.price)}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{formatNumber(activity.price, selectedFuture)}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{activity.volume.toLocaleString()}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{activity.note}</td>
                                                 </tr>
@@ -1232,7 +1232,7 @@ const FuturesPage = () => {
                                                 <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{spread.frontMonth}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{spread.backMonth}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatNumber(spread.spread)}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatNumber(spread.spread,selectedFuture)}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{spread.zScore.toFixed(2)}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${Math.abs(spread.zScore) > 1.5

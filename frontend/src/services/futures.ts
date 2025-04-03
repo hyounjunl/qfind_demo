@@ -1,9 +1,11 @@
 // frontend/src/services/futures.ts
+import { dummyMarketData } from '@/data/futuresDummyData';
+
 const BACKEND_API = 'http://localhost:8889';
 
 // Helper function to generate mock price history data
 const generateMockPriceHistory = (symbol: string, days: number = 90) => {
-    const basePrice = getBasePrice(symbol);
+    const basePrice = getBasePrice(symbol as keyof typeof basePrices);
     const endDate = new Date();
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
@@ -34,20 +36,20 @@ const generateMockPriceHistory = (symbol: string, days: number = 90) => {
 };
 
 // Get base price for each symbol
-const getBasePrice = (symbol: string) => {
-    const basePrices = {
-        "ES": 5274.25,
-        "NQ": 18235.75,
-        "YM": 42803.72,
-        "CL": 82.35,
-        "GC": 2342.80,
-        "ZB": 118.06,
-        "ZN": 112.50,
-        "ZF": 108.75,
-        "6E": 1.08,
-        "6J": 0.0068
-    };
+const basePrices = {
+    "ES": 5274.25,
+    "NQ": 18235.75,
+    "YM": 42803.72,
+    "CL": 82.35,
+    "GC": 2342.80,
+    "ZB": 118.06,
+    "ZN": 112.50,
+    "ZF": 108.75,
+    "6E": 1.08,
+    "6J": 0.0068
+};
 
+const getBasePrice = (symbol: keyof typeof basePrices) => {
     return basePrices[symbol] || 100;
 };
 
