@@ -353,12 +353,21 @@ class MacroService:
                 
                 # Only include news items that have Korean translations
                 if item.id in korean_dict:
+                    if isinstance(item.category, str):
+                        try:
+                            category_list = json.loads(item.category)  # Parse the stringified list
+                        except json.JSONDecodeError:
+                            category_list = [item.category]  # Fallback to treat it as a single string
+                    else:
+                        category_list = item.category if isinstance(item.category, (list, tuple)) else [item.category]
+                    category_fixed = category_list[0] if category_list else "Uncategorized"
+
                     # Create a dictionary with both English and Korean content
                     news_items.append({
                         "id": item.id,
                         "title": item.headline,
                         "date": date_formatted,
-                        "tag": item.category[0] if isinstance(item.category, (list, tuple)) and len(item.category) > 0 else item.category,
+                        "tag": category_fixed,
                         "url": item.url if item.url and item.url != 'NaN' else f"https://www.google.com/search?q={quote(item.headline)}",
                         "body": item.body if item.body else "Breaking News",
                         "kor_title": korean_dict[item.id]["headline"],
