@@ -296,7 +296,8 @@ class MacroService:
                 News.date,
                 News.category,
                 News.headline,
-                News.url
+                News.url,
+                News.body
             ).filter(
                 func.date(News.date) == filter_date.date(),
             ).order_by(News.date.desc())
@@ -325,7 +326,8 @@ class MacroService:
                     "title": item.headline,
                     "date": date_formatted,
                     "tag": item.category[0],
-                    "url": item.url if item.url and item.url != 'NaN' else f"https://www.google.com/search?q={quote(item.headline)}"
+                    "url": item.url if item.url and item.url != 'NaN' else f"https://www.google.com/search?q={quote(item.headline)}",
+                    "body": item.body if item.body else "Breaking News",
                 })
                     
         except Exception as e:
