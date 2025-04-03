@@ -1,7 +1,7 @@
 // frontend/src/services/futures.ts
 import { dummyMarketData } from '@/data/futuresDummyData';
 
-const BACKEND_API = 'http://localhost:8889';
+const BACKEND_API = 'http://10.8.12.8:8889';
 
 
 const getBasePrice = (symbol: keyof typeof basePrices) => {

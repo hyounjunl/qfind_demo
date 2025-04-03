@@ -1,5 +1,5 @@
 
-const BACKEND_API = 'http://localhost:8889'
+const BACKEND_API = 'http://10.8.12.8:8889';
 
 export const fetchEconomicIndicators = async (month?: string) => {
     try {
