@@ -22,7 +22,7 @@ const Sidebar = () => {
             </svg>
           </h2>
           <ul>
-            {Array(10).fill(0).map((_, i) => (
+            {Array(3).fill(0).map((_, i) => (
               <li key={i} className="py-1 px-2 hover:bg-gray-800 rounded-md">
                 Chat History
               </li>

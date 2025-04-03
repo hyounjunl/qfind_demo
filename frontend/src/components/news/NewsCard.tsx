@@ -18,11 +18,10 @@ interface NewsCardProps {
 const NewsCard: React.FC<NewsCardProps> = ({ item }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Use ordered image selection based on item id
+  // Generate a random placeholder image
   const placeholders = ['finance.jpg', 'markets.jpg', 'economy.jpg', 'stocks.jpg', 'currency.jpg'];
-  // Simple ordered assignment based on the item's id
-  const imageIndex = item.id % placeholders.length;
-  const placeholderImage = `/images/news-placeholders/${placeholders[imageIndex]}`;
+  const randomIndex = Math.floor(Math.random() * placeholders.length);
+  const placeholderImage = `/images/news-placeholders/${placeholders[randomIndex]}`;
   
   // Create a truncated preview of the body text
   const bodyPreview = item.body ? 
@@ -62,6 +61,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ item }) => {
         </div>
       </div>
 
+      {/* News Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
@@ -97,7 +97,7 @@ const NewsCard: React.FC<NewsCardProps> = ({ item }) => {
                 <div className="bg-gray-100 h-48 w-full rounded-lg mb-4 overflow-hidden">
                   <Image
                     src={placeholderImage}
-                    alt={item.tag || "News image"}
+                    alt={item.tag}
                     width={600}
                     height={300}
                     className="w-full h-full object-cover"

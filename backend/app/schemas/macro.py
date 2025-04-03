@@ -28,8 +28,10 @@ class MacroNewsItem(BaseModel):
     title: str
     date: str  # e.g., "3hours ago"
     tag: str
-    url : str
+    url: str
     body: str
+    kor_title: Optional[str] = None  # Korean title
+    kor_body: Optional[str] = None   # Korean body
 
 
 class MacroNews(BaseModel):

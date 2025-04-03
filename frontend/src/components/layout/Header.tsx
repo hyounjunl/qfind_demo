@@ -41,9 +41,9 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, isSidebarOpen }) => {
                             <Link href="/futures" className="px-3 py-2 rounded-md text-sm font-medium text-gray-900">
                                 Futures
                             </Link>
-                            <Link href="/news" className="px-3 py-2 rounded-md text-sm font-medium text-gray-900">
+                            {/* <Link href="/news" className="px-3 py-2 rounded-md text-sm font-medium text-gray-900">
                                 News
-                            </Link>
+                            </Link> */}
                         </nav>
                     </div>
                     <div className="flex items-center">

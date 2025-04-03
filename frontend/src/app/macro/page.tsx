@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Layout from '@/components/layout/Layout';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
+import NewsSection from '@/components/news/NewsSection';
 
 
 import {
@@ -484,6 +485,7 @@ const MacroPage = () => {
         date: string;
         tag: string;
         url?: string; // Optional if not all news items have a URL
+        body: string; 
     }
     
     const [news, setNews] = useState<NewsItem[]>([]);
@@ -1012,80 +1014,7 @@ const MacroPage = () => {
                 </div>
 
                 {/* Related News Section - Enhanced */}
-                <div className="mb-8">
-                    <div className="flex items-center justify-between mb-5">
-                        <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center mr-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                                </svg>
-                            </div>
-                            <h2 className="text-xl font-bold text-gray-900">Market News</h2>
-
-                            {/* Animated typing effect indicator */}
-                            <div className="ml-3 flex text-indigo-600 text-sm items-center">
-                                <div className="w-2 h-2 bg-indigo-600 rounded-full mr-1 animate-pulse"></div>
-                                <span>AI Curated</span>
-                            </div>
-                        </div>
-                        <Link href="/news" className="text-indigo-600 hover:text-indigo-800 hover:underline text-sm font-medium flex items-center">
-                            View All
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                        </Link>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-4">
-                        {news.length > 0 ? (
-                            news.slice(0, 5).map(item => {
-                                // Generate a random placeholder image based on categories or just random
-                                // Option 1: Random selection from all placeholders
-                                const placeholders = ['finance.jpg', 'markets.jpg', 'economy.jpg', 'stocks.jpg', 'currency.jpg'];
-                                const randomIndex = Math.floor(Math.random() * placeholders.length);
-                                const placeholderImage = `/images/news-placeholders/${placeholders[randomIndex]}`;
-
-                                return (
-                                    <div key={item.id} className="bg-white rounded-lg shadow-sm overflow-hidden flex hover:shadow-md transition-shadow duration-200 border border-gray-100">
-                                        <div className="bg-gray-200 w-24 h-24 flex-shrink-0 overflow-hidden">
-                                            <Image
-                                                src={placeholderImage}
-                                                alt={item.tag}
-                                                width={96}
-                                                height={96} 
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                        <div className="p-4 flex-1">
-                                            <a href={item.url} target="_blank" rel="noopener noreferrer">
-                                                <h3 className="font-medium text-gray-900 mb-1 hover:text-indigo-700 transition-colors">
-                                                    {item.title}
-                                                </h3>
-                                            </a>
-                                            <div className="flex items-center text-sm text-gray-500">
-                                                <span className="flex items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                    {item.date}
-                                                </span>
-                                                <span className="mx-2">•</span>
-                                                <span className="bg-indigo-50 text-indigo-700 px-2 py-1 rounded-full text-xs font-medium">{item.tag}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })
-                        ) : (
-                            <div className="bg-white rounded-lg shadow-sm p-6 text-center text-gray-500 border border-gray-100">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                                </svg>
-                                <p>No news articles available for this date</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
+                <NewsSection news={news} title="Market News" />
             </div>
         </Layout>
     );

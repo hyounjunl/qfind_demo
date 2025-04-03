@@ -72,6 +72,20 @@ class News(Base):
     created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
+class KoreanNews(Base):
+    __tablename__ = "market_news"
+    __table_args__ = {'schema': settings.DB_SCHEMA}  # Use qfind schema
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(DateTime(timezone=True), nullable=False)  
+    category = Column(Text, nullable=False)                 
+    headline = Column(String(1000), nullable=False)  # This is the Korean headline       
+    body = Column(Text, nullable=False)  # This is the Korean body                   
+    source = Column(String(50), nullable=False)            
+    url = Column(String(1000), nullable=True) 
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+
 class TrendingTicker(Base):
     __tablename__ = "trending_tickers"
     __table_args__ = {'schema': settings.DB_SCHEMA}

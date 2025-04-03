@@ -5,7 +5,7 @@ import random
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import extract
 from app.db.database import get_db
-from app.db.models import MacroAnalysisState, News
+from app.db.models import KoreanNews, MacroAnalysisState, News
 from sqlalchemy import func
 from urllib.parse import quote
 from calendar import monthrange
@@ -277,7 +277,7 @@ class MacroService:
         }
     
     def get_macro_news(self, date_str: Optional[str] = None, db: Session = None) -> Dict:
-        """Get macro-related news for a specific date"""
+        """Get macro-related news for a specific date, only including items that have Korean translations"""
         # If no date provided, use today's date
         if not date_str:
             date_str = datetime.now().strftime("%Y-%m-%d")
@@ -290,8 +290,26 @@ class MacroService:
             # Convert date_str to datetime for filtering
             filter_date = datetime.strptime(date_str, "%Y-%m-%d")
             
-            # Query news for the specified date
-            result = db.query(
+            # First, query the Korean news table to get all available IDs for the date
+            # This ensures we only get news that have Korean translations
+            korean_news_ids = db.query(
+                KoreanNews.id
+            ).filter(
+                func.date(KoreanNews.date) == filter_date.date()
+            ).all()
+            
+            # Extract just the IDs from the query result
+            korean_ids = [item.id for item in korean_news_ids]
+            
+            # If no Korean translations are available for this date, return empty list
+            if not korean_ids:
+                return {
+                    "date": filter_date.date(),
+                    "news": []
+                }
+            
+            # Query English news that match the Korean IDs
+            english_news = db.query(
                 News.id,
                 News.date,
                 News.category,
@@ -299,13 +317,26 @@ class MacroService:
                 News.url,
                 News.body
             ).filter(
-                func.date(News.date) == filter_date.date(),
-            ).order_by(News.date.desc())
+                News.id.in_(korean_ids),
+                func.date(News.date) == filter_date.date()
+            ).order_by(News.date.desc()).all()
+            
+            # Now get the full Korean news data for these IDs
+            korean_news = db.query(
+                KoreanNews.id,
+                KoreanNews.headline,
+                KoreanNews.body
+            ).filter(
+                KoreanNews.id.in_(korean_ids)
+            ).all()
+            
+            # Convert Korean news to a dictionary for easier lookup
+            korean_dict = {item.id: {"headline": item.headline, "body": item.body} for item in korean_news}
             
             now = datetime.now()
             
             # Process the results and format dates
-            for item in result:
+            for item in english_news:
                 news_date = item.date
                 time_diff = now - news_date
                 
@@ -320,15 +351,19 @@ class MacroService:
                 else:  # Days ago
                     date_formatted = f"{time_diff.days} days ago"
                 
-                # Just create a dictionary with the right structure
-                news_items.append({
-                    "id": item.id,
-                    "title": item.headline,
-                    "date": date_formatted,
-                    "tag": item.category[0],
-                    "url": item.url if item.url and item.url != 'NaN' else f"https://www.google.com/search?q={quote(item.headline)}",
-                    "body": item.body if item.body else "Breaking News",
-                })
+                # Only include news items that have Korean translations
+                if item.id in korean_dict:
+                    # Create a dictionary with both English and Korean content
+                    news_items.append({
+                        "id": item.id,
+                        "title": item.headline,
+                        "date": date_formatted,
+                        "tag": item.category[0] if isinstance(item.category, (list, tuple)) and len(item.category) > 0 else item.category,
+                        "url": item.url if item.url and item.url != 'NaN' else f"https://www.google.com/search?q={quote(item.headline)}",
+                        "body": item.body if item.body else "Breaking News",
+                        "kor_title": korean_dict[item.id]["headline"],
+                        "kor_body": korean_dict[item.id]["body"]
+                    })
                     
         except Exception as e:
             print(f"Error retrieving macro news with error:{e}")
