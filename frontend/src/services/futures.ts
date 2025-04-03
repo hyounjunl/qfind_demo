@@ -108,6 +108,32 @@ export const fetchFuturesData = async (symbol: string) => {
                             note: "Normal trading activity"
                         }
                     ];
+
+                    if (!data.calendarSpreads) {
+                        // Create default calendar spreads data
+                        data.calendarSpreads = [
+                          { 
+                            frontMonth: "Jun 2025", 
+                            backMonth: "Sep 2025", 
+                            spread: -(data.currentPrice * 0.001).toFixed(2), 
+                            zScore: 1.2 
+                          },
+                          { 
+                            frontMonth: "Sep 2025", 
+                            backMonth: "Dec 2025", 
+                            spread: -(data.currentPrice * 0.0009).toFixed(2), 
+                            zScore: 0.3 
+                          }
+                        ];
+                      }
+                      if (!data.seasonalPatterns) {
+                        // Create default seasonal patterns data
+                        data.seasonalPatterns = {
+                          currentPhase: `Historically ${isPositiveMonth(new Date()) ? 'strong' : 'neutral'} period`,
+                          consistency: `${Math.floor(Math.random() * 30) + 55}% of years show positive returns in this period`,
+                          averageReturn: `${isPositiveMonth(new Date()) ? '+' : ''}${(Math.random() * 3).toFixed(1)}% over next 30 days historically`
+                        };
+                      }
                 }
 
                 return data;
@@ -127,11 +153,29 @@ export const fetchFuturesData = async (symbol: string) => {
         const minPrice = Math.min(...priceHistory.map(p => p.price));
         const maxPrice = Math.max(...priceHistory.map(p => p.price));
 
-        function formatTime(date, minutesOffset = 0) {
+        function formatTime(date: Date, minutesOffset = 0) {
             const newDate = new Date(date);
             newDate.setMinutes(newDate.getMinutes() + minutesOffset);
             return newDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
         }
+
+        function isPositiveMonth(date: Date) {
+            // This is a simplification - you could make this more accurate with real seasonal data
+            const month = date.getMonth();
+            // For equity indices, consider Apr-Jul and Nov-Dec as positive seasons
+            if (symbol.includes('ES') || symbol.includes('NQ') || symbol.includes('YM')) {
+              return [3, 4, 5, 6, 10, 11].includes(month);
+            }
+            // For commodities, each has different seasonal patterns
+            else if (symbol === 'CL') {
+              return [0, 1, 6, 7].includes(month); // Jan-Feb, Jul-Aug for crude
+            }
+            else if (symbol === 'GC') {
+              return [0, 7, 8, 11].includes(month); // Jan, Aug-Sep, Dec for gold
+            }
+            // Default - random but weighted to be positive
+            return Math.random() > 0.4;
+          }
 
         const currentPrice = 24212;
 
@@ -193,8 +237,27 @@ export const fetchFuturesData = async (symbol: string) => {
                     price: currentPrice * (1 + 0.002 * Math.random()),
                     volume: Math.floor(Math.random() * 2000) + 500,
                     note: "Normal trading activity"
+                },
+            ],
+            calendarSpreads: [
+                { 
+                  frontMonth: "Jun 2025", 
+                  backMonth: "Sep 2025", 
+                  spread: -(currentPrice * 0.001).toFixed(2), 
+                  zScore: 1.2 
+                },
+                { 
+                  frontMonth: "Sep 2025", 
+                  backMonth: "Dec 2025", 
+                  spread: -(currentPrice * 0.0009).toFixed(2), 
+                  zScore: 0.3 
                 }
-            ]
+              ],
+              seasonalPatterns: {
+                currentPhase: `Historically ${isPositiveMonth(new Date()) ? 'strong' : 'neutral'} period`,
+                consistency: `${Math.floor(Math.random() * 30) + 55}% of years show positive returns in this period`,
+                averageReturn: `${isPositiveMonth(new Date()) ? '+' : ''}${(Math.random() * 3).toFixed(1)}% over next 30 days historically`
+              },
         };
     } catch (error) {
         console.error('Error fetching futures data:', error);
