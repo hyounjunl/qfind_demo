@@ -28,6 +28,12 @@ const formatNumber = (num: number, symbol: string) => {
     }).format(num);
 };
 
+interface PriceHistoryEntry {
+    date: string;
+    price: number;
+    volume: number;
+  }
+
 const FuturesPage = () => {
     // State variables
     const [activeTab, setActiveTab] = useState('market-intelligence');
@@ -36,7 +42,7 @@ const FuturesPage = () => {
     const [loading, setLoading] = useState(true);
     interface MarketData {
         [key: string]: {
-            priceHistory: any[] | undefined;
+            priceHistory: PriceHistoryEntry;
             currentPrice: number;
             dailyChange: number;
             dailyChangePercent: number;
@@ -180,7 +186,7 @@ const FuturesPage = () => {
         };
 
         loadData();
-    }, [selectedFuture]);
+    }, [selectedFuture, dummyNews]);
 
     // Get current future data
     const currentFutureData = useMemo(() => {
@@ -364,7 +370,7 @@ const FuturesPage = () => {
                         <div className="w-full h-72 bg-white rounded-lg mb-4 border border-gray-200">
                             {currentFutureData && currentFutureData.priceHistory ? (
                                 <FuturesChart
-                                    priceHistory={currentFutureData.priceHistory}
+                                    priceHistory={Array.isArray(currentFutureData.priceHistory) ? currentFutureData.priceHistory : undefined}
                                     symbol={selectedFuture}
                                 />
                             ) : (

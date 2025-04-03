@@ -1,4 +1,4 @@
-// frontend/src/components/futures/FuturesChart.tsx
+// src/components/futures/FuturesChart.tsx
 'use client'
 
 import React, { useEffect, useState } from 'react';
@@ -103,7 +103,9 @@ const FuturesChart: React.FC<FuturesChartProps> = ({ priceHistory, symbol }) => 
                                 try {
                                     const date = new Date(tick);
                                     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                                } catch (e) {
+                                } catch (error) {
+                                    // Log error and fall back to original value
+                                    console.warn('Error formatting date tick:', error);
                                     return tick;
                                 }
                             }}
@@ -120,7 +122,9 @@ const FuturesChart: React.FC<FuturesChartProps> = ({ priceHistory, symbol }) => 
                                 try {
                                     const date = new Date(label);
                                     return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                                } catch (e) {
+                                } catch (error) {
+                                    // Log error and return original label
+                                    console.warn('Error formatting tooltip label:', error);
                                     return label;
                                 }
                             }}
@@ -159,7 +163,9 @@ const FuturesChart: React.FC<FuturesChartProps> = ({ priceHistory, symbol }) => 
                                 try {
                                     const date = new Date(label);
                                     return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                                } catch (e) {
+                                } catch (error) {
+                                    // Log error and return original label for volume chart
+                                    console.warn('Error formatting volume chart label:', error);
                                     return label;
                                 }
                             }}

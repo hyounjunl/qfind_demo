@@ -3,6 +3,11 @@ import { dummyMarketData } from '@/data/futuresDummyData';
 
 const BACKEND_API = 'http://localhost:8889';
 
+
+const getBasePrice = (symbol: keyof typeof basePrices) => {
+    return basePrices[symbol] || 100;
+};
+
 // Helper function to generate mock price history data
 const generateMockPriceHistory = (symbol: string, days: number = 90) => {
     const basePrice = getBasePrice(symbol as keyof typeof basePrices);
@@ -33,48 +38,6 @@ const generateMockPriceHistory = (symbol: string, days: number = 90) => {
     return priceHistory;
 };
 
-// Function to generate price history from a current price
-function generatePriceHistoryFromCurrentPrice(currentPrice: number, symbol: string, days: number = 90) {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-    
-    const priceHistory = [];
-    let price = currentPrice * 0.9; // Start 10% lower than current price
-    
-    // Generate data for each day
-    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-        // Skip weekends
-        if (d.getDay() === 0 || d.getDay() === 6) continue;
-        
-        // Gradual increase towards current price with random fluctuations
-        const daysToEnd = Math.ceil((endDate.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
-        const trendFactor = 1 - (daysToEnd / days);
-        
-        // Random daily change (-1% to +1%) but with trend toward final price
-        const dailyChangePercent = (Math.random() * 2 - 1) * 0.01;
-        const trendChangePercent = (currentPrice - price) / price * 0.05; // 5% of the remaining difference
-        
-        price = price * (1 + dailyChangePercent + trendChangePercent);
-        
-        // Add some volume
-        const volume = Math.floor(Math.random() * 1000000) + 500000;
-        
-        priceHistory.push({
-            date: d.toISOString().split('T')[0],
-            price: parseFloat(price.toFixed(2)),
-            volume
-        });
-    }
-    
-    // Ensure the last price is exactly the current price
-    if (priceHistory.length > 0) {
-        priceHistory[priceHistory.length - 1].price = currentPrice;
-    }
-    
-    return priceHistory;
-}
-
 // Get base price for each symbol
 const basePrices = {
     "ES": 5274.25,
@@ -87,10 +50,6 @@ const basePrices = {
     "ZF": 108.75,
     "6E": 1.08,
     "6J": 0.0068
-};
-
-const getBasePrice = (symbol: keyof typeof basePrices) => {
-    return basePrices[symbol] || 100;
 };
 
 // Helper function to format time
@@ -224,6 +183,8 @@ export const fetchFuturesData = async (symbol: string) => {
             }
         } catch (error) {
             console.log('API not available, falling back to dummy data');
+            console.error('Error fetching futures data:', error);
+            throw error;
         }
 
         // If no specific dummy data exists, generate generic mock data
