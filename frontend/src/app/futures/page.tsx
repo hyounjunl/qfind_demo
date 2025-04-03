@@ -170,7 +170,7 @@ const FuturesPage = () => {
                 riskAssessment: {
                     overnightGapRisk: "Elevated due to tech earnings schedule",
                     volatilityOutlook: "Likely to expand during earnings season",
-                    eventRisks: ["NVIDIA earnings next week", "Fed speakers discussing tech valuations"]
+                    eventRisks: ["TSLA 25 Q1 earnings Apr 23", "Fed speakers discussing tech valuations", "Trump's Tariff Policy Announced"]
                 }
             },
             calendarSpreads: [
@@ -183,10 +183,10 @@ const FuturesPage = () => {
                 averageReturn: "+1.8% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 19536.50, volume: 845, note: "Testing session high" },
-                { time: "10:15 AM", price: 19456.75, volume: 1421, note: "Bounce from VWAP" },
-                { time: "9:45 AM", price: 19333.50, volume: 1045, note: "Consolidation" },
-                { time: "9:30 AM", price: 19433.25, volume: 2532, note: "Opening range" },
+                { time: "10:35 AM", price: 19536.50, volume: 834, note: "Testing session high" },
+                { time: "10:15 AM", price: 19456.75, volume: 1521, note: "Bounce from VWAP" },
+                { time: "9:45 AM", price: 19333.50, volume: 1145, note: "Consolidation" },
+                { time: "9:30 AM", price: 19433.25, volume: 2622, note: "Opening range" },
             ]
         },
         YM: {
@@ -209,9 +209,9 @@ const FuturesPage = () => {
                     anomalies: "The NQ/ES ratio is approaching extreme levels, suggesting potential mean reversion."
                 },
                 riskAssessment: {
-                    overnightGapRisk: "Elevated due to tech earnings schedule",
-                    volatilityOutlook: "Likely to expand during earnings season",
-                    eventRisks: ["NVIDIA earnings next week", "Fed speakers discussing tech valuations"]
+                    overnightGapRisk: "Low to Moderate",
+                    volatilityOutlook: "Medium-term potential for increased volatility due to hedging activity ahead of economic data releases",
+                    eventRisks: ["Trade and tariff policy developments remain key risk factors", "Options open interest patterns suggest hedging for upcoming economic data releases"]
                 }
             },
             calendarSpreads: [
@@ -224,10 +224,10 @@ const FuturesPage = () => {
                 averageReturn: "+1.8% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 42045.50, volume: 845, note: "Testing session high" },
-                { time: "10:15 AM", price: 42078.75, volume: 1421, note: "Bounce from VWAP" },
-                { time: "9:45 AM", price: 42122.50, volume: 1045, note: "Consolidation" },
-                { time: "9:30 AM", price: 42200.25, volume: 2532, note: "Opening range" },
+                { time: "10:35 AM", price: 42045.50, volume: 1243, note: "Testing session high" },
+                { time: "10:15 AM", price: 42078.75, volume: 1131, note: "Bounce from VWAP" },
+                { time: "9:45 AM", price: 42122.50, volume: 945, note: "Consolidation" },
+                { time: "9:30 AM", price: 42200.25, volume: 2211, note: "Opening range" },
             ]
         },
         CL: {
@@ -252,7 +252,7 @@ const FuturesPage = () => {
                 riskAssessment: {
                     overnightGapRisk: "High due to EIA inventory report tomorrow",
                     volatilityOutlook: "Expected to remain elevated with geopolitical tensions",
-                    eventRisks: ["OPEC+ comments", "EIA inventory data", "Middle East developments"]
+                    eventRisks: ["OPEC+ comments", "Weekly EIA and API Crude Oil Inventory Data Announced", "Middle East developments"]
                 }
             },
             calendarSpreads: [
@@ -292,9 +292,9 @@ const FuturesPage = () => {
                     anomalies: "Correlation with equity markets has turned positive recently, breaking from historical pattern."
                 },
                 riskAssessment: {
-                    overnightGapRisk: "Low to moderate",
-                    volatilityOutlook: "Expected to decrease after recent price surge",
-                    eventRisks: ["Fed speakers tomorrow", "Employment data Friday"]
+                    overnightGapRisk: "Moderate to High",
+                    volatilityOutlook: "Expecting Short-Term Volatility",
+                    eventRisks: ["Physical Demand Reports", "Inflation concerns", "Geopolitical Tensions"]
                 }
             },
             calendarSpreads: [
@@ -307,10 +307,10 @@ const FuturesPage = () => {
                 averageReturn: "+1.1% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 3043.58, volume: 845, note: "Resistance test" },
-                { time: "10:15 AM", price: 3132.66, volume: 1240, note: "20-period EMA bounce" },
-                { time: "9:45 AM", price: 3165.42, volume: 965, note: "Support level hold" },
-                { time: "9:30 AM", price: 3200.81, volume: 1845, note: "Opening range" },
+                { time: "10:35 AM", price: 3043.58, volume: 734, note: "Resistance test" },
+                { time: "10:15 AM", price: 3132.66, volume: 1122, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 3165.42, volume: 987, note: "Support level hold" },
+                { time: "9:30 AM", price: 3200.81, volume: 1621, note: "Opening range" },
             ]
         },
         ZB: {
@@ -333,9 +333,9 @@ const FuturesPage = () => {
                     anomalies: "The correlation with equities is more negative than usual, suggesting heightened risk-off positioning."
                 },
                 riskAssessment: {
-                    overnightGapRisk: "Moderate",
-                    volatilityOutlook: "Expected to increase with upcoming inflation data",
-                    eventRisks: ["Treasury auctions this week", "CPI data Thursday"]
+                    overnightGapRisk: "Low to Moderate",
+                    volatilityOutlook: "Low with potential for sporadic increases",
+                    eventRisks: ["Treasury Auctions", "Fed Monetary Policy", "Fiscal Policy Changes"]
                 }
             },
             calendarSpreads: [
@@ -348,10 +348,10 @@ const FuturesPage = () => {
                 averageReturn: "-1.2% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 118.06, volume: 645, note: "Support test" },
-                { time: "10:15 AM", price: 118.12, volume: 832, note: "Resistance rejection" },
-                { time: "9:45 AM", price: 118.21, volume: 754, note: "Failed breakout attempt" },
-                { time: "9:30 AM", price: 118.15, volume: 1243, note: "Opening range" },
+                { time: "10:35 AM", price: 118.06, volume: 742, note: "Support test" },
+                { time: "10:15 AM", price: 118.12, volume: 812, note: "Resistance rejection" },
+                { time: "9:45 AM", price: 118.21, volume: 958, note: "Failed breakout attempt" },
+                { time: "9:30 AM", price: 118.15, volume: 1163, note: "Opening range" },
             ]
         },
         ZN: {
@@ -375,8 +375,8 @@ const FuturesPage = () => {
                 },
                 riskAssessment: {
                     overnightGapRisk: "Low to moderate",
-                    volatilityOutlook: "Expected to decrease after recent price surge",
-                    eventRisks: ["Fed speakers tomorrow", "Employment data Friday"]
+                    volatilityOutlook: "Low with potential for targeted increases",
+                    eventRisks: ["Treasury Auctions", "Global Yield Movements", "Fiscal Policy Developments"]
                 }
             },
             calendarSpreads: [
@@ -389,10 +389,10 @@ const FuturesPage = () => {
                 averageReturn: "+1.1% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 111.34, volume: 845, note: "Resistance test" },
-                { time: "10:15 AM", price: 111.43, volume: 1240, note: "20-period EMA bounce" },
-                { time: "9:45 AM", price: 111.56, volume: 965, note: "Support level hold" },
-                { time: "9:30 AM", price: 111.24, volume: 1845, note: "Opening range" },
+                { time: "10:35 AM", price: 111.34, volume: 2344, note: "Resistance test" },
+                { time: "10:15 AM", price: 111.43, volume: 1940, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 111.56, volume: 1965, note: "Support level hold" },
+                { time: "9:30 AM", price: 111.24, volume: 1588, note: "Opening range" },
             ]
         },
         ZF: {
@@ -415,9 +415,9 @@ const FuturesPage = () => {
                     anomalies: "Correlation with equity markets has turned positive recently, breaking from historical pattern."
                 },
                 riskAssessment: {
-                    overnightGapRisk: "Low to moderate",
-                    volatilityOutlook: "Expected to decrease after recent price surge",
-                    eventRisks: ["Fed speakers tomorrow", "Employment data Friday"]
+                    overnightGapRisk: "Low",
+                    volatilityOutlook: "Low with focus on curve dynamics",
+                    eventRisks: ["Fed Policy Communications", "Financial Stability Concerns", "International Rate Differentials"]
                 }
             },
             calendarSpreads: [
@@ -430,10 +430,10 @@ const FuturesPage = () => {
                 averageReturn: "+1.1% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 108.44, volume: 845, note: "Resistance test" },
-                { time: "10:15 AM", price: 108.23, volume: 1240, note: "20-period EMA bounce" },
-                { time: "9:45 AM", price: 108.24, volume: 965, note: "Support level hold" },
-                { time: "9:30 AM", price: 108.34, volume: 1845, note: "Opening range" },
+                { time: "10:35 AM", price: 108.44, volume: 3332, note: "Resistance test" },
+                { time: "10:15 AM", price: 108.23, volume: 3140, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 108.24, volume: 2965, note: "Support level hold" },
+                { time: "9:30 AM", price: 108.34, volume: 2841, note: "Opening range" },
             ]
         },
         E6: {
@@ -456,9 +456,9 @@ const FuturesPage = () => {
                     anomalies: "Correlation with equity markets has turned positive recently, breaking from historical pattern."
                 },
                 riskAssessment: {
-                    overnightGapRisk: "Low to moderate",
+                    overnightGapRisk: "Moderate",
                     volatilityOutlook: "Expected to decrease after recent price surge",
-                    eventRisks: ["Fed speakers tomorrow", "Employment data Friday"]
+                    eventRisks: ["Central Bank Communications", "Market Sentiment Shifts", "Cross-Currency Influences"]
                 }
             },
             calendarSpreads: [
@@ -471,10 +471,10 @@ const FuturesPage = () => {
                 averageReturn: "+1.1% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 1.08340, volume: 845, note: "Resistance test" },
-                { time: "10:15 AM", price: 1.06365, volume: 1240, note: "20-period EMA bounce" },
-                { time: "9:45 AM", price: 1.07321, volume: 965, note: "Support level hold" },
-                { time: "9:30 AM", price: 1.08455, volume: 1845, note: "Opening range" },
+                { time: "10:35 AM", price: 1.08340, volume: 1844, note: "Resistance test" },
+                { time: "10:15 AM", price: 1.06365, volume: 1446, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 1.07321, volume: 1386, note: "Support level hold" },
+                { time: "9:30 AM", price: 1.08455, volume: 1218, note: "Opening range" },
             ]
         },
         J6: {
@@ -497,9 +497,9 @@ const FuturesPage = () => {
                     anomalies: "Correlation with equity markets has turned positive recently, breaking from historical pattern."
                 },
                 riskAssessment: {
-                    overnightGapRisk: "Low to moderate",
-                    volatilityOutlook: "Expected to decrease after recent price surge",
-                    eventRisks: ["Fed speakers tomorrow", "Employment data Friday"]
+                    overnightGapRisk: "Moderate to High",
+                    volatilityOutlook: "Moderate with potential spikes",
+                    eventRisks: ["Bank of Japan Policy Decisions", "Ministry of Finance Intervention"]
                 }
             },
             calendarSpreads: [
@@ -512,10 +512,10 @@ const FuturesPage = () => {
                 averageReturn: "+1.1% over next 30 days historically"
             },
             recentActivity: [
-                { time: "10:35 AM", price: 0.0067523, volume: 845, note: "Resistance test" },
-                { time: "10:15 AM", price: 0.0067454, volume: 1240, note: "20-period EMA bounce" },
-                { time: "9:45 AM", price: 0.00675434, volume: 965, note: "Support level hold" },
-                { time: "9:30 AM", price: 0.0067528, volume: 1845, note: "Opening range" },
+                { time: "10:35 AM", price: 0.0067523, volume: 2344, note: "Resistance test" },
+                { time: "10:15 AM", price: 0.0067454, volume: 2440, note: "20-period EMA bounce" },
+                { time: "9:45 AM", price: 0.00675434, volume: 1935, note: "Support level hold" },
+                { time: "9:30 AM", price: 0.0067528, volume: 1654, note: "Opening range" },
             ]
         },
     }), []);
